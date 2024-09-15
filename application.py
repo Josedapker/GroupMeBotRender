@@ -304,12 +304,17 @@ def search_web(query: str) -> List[Dict] | None:
         print(f"Error searching web: {e}")
         return None
 
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+
 async def generate_ai_response(prompt: str, model: str = "gpt-3.5-turbo", use_web_search: bool = False) -> str:
     try:
-        logger.info(f"Generating AI response for prompt: '{prompt}', model: {model}, use_web_search: {use_web_search}")
+        logger.debug(f"Generating AI response for prompt: '{prompt}', model: {model}, use_web_search: {use_web_search}")
         
         if use_web_search:
+            logger.debug("Attempting web search")
             search_results = search_web(prompt)
+            logger.debug(f"Web search results: {search_results}")
             limited_results = search_results[:3] if search_results else []
             search_content = "\n".join([f"- {result['title']}: {result['content'][:200]}..." for result in limited_results])
             logger.info(f"Web search results: {search_content}")
@@ -325,13 +330,13 @@ async def generate_ai_response(prompt: str, model: str = "gpt-3.5-turbo", use_we
                 {"role": "user", "content": prompt}
             ]
 
-        logger.info(f"Sending request to OpenAI API with messages: {messages}")
+        logger.debug("Sending request to OpenAI API")
         response = client.chat.completions.create(
             model=model,
             messages=messages,
             max_tokens=1000 if model == "gpt-4" else 500
         )
-        logger.info(f"Received response from OpenAI API: {response}")
+        logger.debug(f"Received response from OpenAI API: {response}")
 
         return response.choices[0].message.content
 

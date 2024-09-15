@@ -1,10 +1,9 @@
 import sys
 import json
 import asyncio
-import websockets
 from datetime import datetime, timezone
 import time
-from openai import OpenAI
+import openai
 from PIL import Image
 from io import BytesIO
 from dotenv import load_dotenv
@@ -61,9 +60,11 @@ print(f"OPENAI_API_KEY loaded: {OPENAI_API_KEY is not None}")
 print(f"TAVILY_API_KEY loaded: {TAVILY_API_KEY is not None}")
 print(f"GROUPME_ACCESS_TOKEN loaded: {GROUPME_ACCESS_TOKEN is not None}")
 
-print(f"OpenAI API Key: {os.getenv('OPENAI_API_KEY')[:5]}...")
+# Remove any logging of the actual API key
+print("OpenAI API Key loaded successfully.")
 
-client = OpenAI(api_key=OPENAI_API_KEY)
+# Set the OpenAI API key
+openai.api_key = OPENAI_API_KEY
 
 from tavily import TavilyClient
 tavily_client = TavilyClient(TAVILY_API_KEY)
@@ -101,7 +102,7 @@ def split_message(text: str, limit: int = 1000) -> List[str]:
             text = text[last_space+1:]
     return parts
 
-async def upload_image_to_groupme(image_url: str) -> str | None:
+async def upload_image_to_groupme(image_url: str) -> Union[str, None]:
     try:
         print(f"Downloading image from: {image_url}")
         async with httpx.AsyncClient() as client:
@@ -135,7 +136,7 @@ async def upload_image_to_groupme(image_url: str) -> str | None:
         print(f"An unexpected error occurred: {str(e)}")
         return None
 
-async def send_message(bot_id: str, text: str, image_url: str | None = None) -> None:
+async def send_message(bot_id: str, text: str, image_url: Union[str, None] = None) -> None:
     url = "https://api.groupme.com/v3/bots/post"
     
     attachment = []
@@ -188,13 +189,13 @@ def webhook():
     
     # Process the incoming message
     if data['name'] != 'GroupMe Bot':  # Prevent the bot from responding to itself
-        message = data.get('text', '').lower()
-        if message.startswith('!help'):
+        message = data.get('text', '')
+        if message.lower().startswith('!help'):
             send_message_sync(BOT_ID, get_help_message())
-        elif message.startswith('!usage'):
+        elif message.lower().startswith('!usage'):
             usage_info = get_openai_usage_sync()
             send_message_sync(BOT_ID, usage_info)
-        elif message.startswith('!ai4'):
+        elif message.lower().startswith('!ai4'):
             prompt = validate_prompt(message[5:].strip())
             if prompt:
                 logger.info(f"Generating AI4 response for prompt: '{prompt}'")
@@ -203,7 +204,7 @@ def webhook():
                 send_message_sync(BOT_ID, response)
             else:
                 send_message_sync(BOT_ID, "Please provide a valid prompt.")
-        elif message.startswith('!ai'):
+        elif message.lower().startswith('!ai'):
             prompt = validate_prompt(message[4:].strip())
             if prompt:
                 logger.info(f"Generating AI response for prompt: '{prompt}'")
@@ -212,7 +213,7 @@ def webhook():
                 send_message_sync(BOT_ID, response)
             else:
                 send_message_sync(BOT_ID, "Please provide a valid prompt.")
-        elif message.startswith('!image'):
+        elif message.lower().startswith('!image'):
             prompt = validate_prompt(message[7:].strip())
             if prompt:
                 logger.info(f"Generating image for prompt: '{prompt}'")
@@ -246,7 +247,7 @@ async def get_openai_usage() -> str:
         usage_url = "https://api.openai.com/v1/usage"
         
         headers = {
-            "Authorization": f"Bearer {os.getenv('OPENAI_API_KEY')}",
+            "Authorization": f"Bearer {OPENAI_API_KEY}",
             "Content-Type": "application/json"
         }
 
@@ -280,23 +281,21 @@ async def get_openai_usage() -> str:
     except Exception as e:
         return f"Error fetching OpenAI usage: {str(e)}"
 
-def generate_image(prompt: str) -> str | None:
+def generate_image(prompt: str) -> Union[str, None]:
     try:
         logger.info(f"Attempting to generate image with prompt: {prompt}")
-        response = client.images.generate(
-            model="dall-e-3",
+        response = openai.Image.create(
             prompt=prompt,
-            size="1024x1024",
-            quality="standard",
             n=1,
+            size="1024x1024"
         )
         logger.info(f"Image generation response: {response}")
-        return response.data[0].url
+        return response['data'][0]['url']
     except Exception as e:
         logger.error(f"Error generating image: {str(e)}")
         return None
 
-def search_web(query: str) -> List[Dict] | None:
+def search_web(query: str) -> Union[List[Dict], None]:
     try:
         search_result = tavily_client.search(query=query, search_depth="advanced")
         return search_result['results'][:3]  # Return top 3 results
@@ -331,7 +330,7 @@ async def generate_ai_response(prompt: str, model: str = "gpt-3.5-turbo", use_we
             ]
 
         logger.debug("Sending request to OpenAI API")
-        response = client.chat.completions.create(
+        response = openai.ChatCompletion.create(
             model=model,
             messages=messages,
             max_tokens=1000 if model == "gpt-4" else 500
@@ -350,7 +349,7 @@ def handle_rate_limit_exceeded(e):
     logger.warning(f"Rate limit exceeded: {str(e)}")
     return "Rate limit exceeded. Please try again later.", 429
 
-def send_message_sync(bot_id: str, text: str, image_url: str | None = None) -> None:
+def send_message_sync(bot_id: str, text: str, image_url: Union[str, None] = None) -> None:
     asyncio.run(send_message(bot_id, text, image_url))
 
 def get_openai_usage_sync() -> str:

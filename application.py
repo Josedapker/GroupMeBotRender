@@ -86,7 +86,7 @@ def test():
 def custom_key_func():
     if request.remote_addr == '127.0.0.1':
         return None  # Exempt localhost from rate limiting
-    return get_remote_address()
+    return get_remote_address() or 'default'  # Use 'default' if get_remote_address() returns None
 
 # Initialize the limiter with the custom key function
 limiter = Limiter(
@@ -180,6 +180,7 @@ async def send_message(bot_id: str, text: str, image_url: Union[str, None] = Non
                 print(f"Message part {i+1} sent successfully!")
             except httpx.RequestError as e:
                 print(f"Error sending message part {i+1}: {str(e)}")
+                logger.error(f"Full error details: {e.request.url}, {e.request.headers}, {e.request.content}")
             
             if i < len(message_parts) - 1:
                 await asyncio.sleep(1)
@@ -263,6 +264,7 @@ async def webhook():
         return jsonify(success=False, error="Invalid JSON"), 400
     except Exception as e:
         logger.error(f"Unexpected error in webhook: {str(e)}")
+        logger.error(traceback.format_exc())  # Add this line to get the full traceback
         return jsonify(success=False, error="Internal server error"), 500
 
 def validate_prompt(prompt: str) -> str:

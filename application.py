@@ -3,7 +3,7 @@ import json
 import asyncio
 from datetime import datetime, timezone
 import time
-import openai
+from openai import OpenAI
 from PIL import Image
 from io import BytesIO
 from dotenv import load_dotenv
@@ -12,13 +12,12 @@ import httpx
 from flask import Flask, request, jsonify
 from typing import List, Dict, Union
 import logging
-import requests
+import traceback
 from logging.handlers import RotatingFileHandler
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_limiter.errors import RateLimitExceeded
 from asgiref.wsgi import WsgiToAsgi
-import traceback
 from hypercorn.asyncio import serve
 from hypercorn.config import Config
 
@@ -64,7 +63,7 @@ print(f"GROUPME_ACCESS_TOKEN loaded: {GROUPME_ACCESS_TOKEN is not None}")
 print("OpenAI API Key loaded successfully.")
 
 # Set the OpenAI API key
-openai.api_key = OPENAI_API_KEY
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 from tavily import TavilyClient
 tavily_client = TavilyClient(TAVILY_API_KEY)
@@ -184,50 +183,50 @@ For any issues or feature requests, please contact the bot administrator.
     return help_message
 
 @application.route('/', methods=['POST'])
-def webhook():
+async def webhook():
     data = request.get_json()
     
     # Process the incoming message
     if data['name'] != 'GroupMe Bot':  # Prevent the bot from responding to itself
         message = data.get('text', '')
         if message.lower().startswith('!help'):
-            send_message_sync(BOT_ID, get_help_message())
+            await send_message(BOT_ID, get_help_message())
         elif message.lower().startswith('!usage'):
-            usage_info = get_openai_usage_sync()
-            send_message_sync(BOT_ID, usage_info)
+            usage_info = await get_openai_usage()
+            await send_message(BOT_ID, usage_info)
         elif message.lower().startswith('!ai4'):
             prompt = validate_prompt(message[5:].strip())
             if prompt:
                 logger.info(f"Generating AI4 response for prompt: '{prompt}'")
-                response = generate_ai_response_sync(prompt, "gpt-4", True)
+                response = await generate_ai_response(prompt, "gpt-4", True)
                 logger.info(f"AI4 response generated: {response}")
-                send_message_sync(BOT_ID, response)
+                await send_message(BOT_ID, response)
             else:
-                send_message_sync(BOT_ID, "Please provide a valid prompt.")
+                await send_message(BOT_ID, "Please provide a valid prompt.")
         elif message.lower().startswith('!ai'):
             prompt = validate_prompt(message[4:].strip())
             if prompt:
                 logger.info(f"Generating AI response for prompt: '{prompt}'")
-                response = generate_ai_response_sync(prompt, "gpt-3.5-turbo", False)
+                response = await generate_ai_response(prompt, "gpt-3.5-turbo", False)
                 logger.info(f"AI response generated: {response}")
-                send_message_sync(BOT_ID, response)
+                await send_message(BOT_ID, response)
             else:
-                send_message_sync(BOT_ID, "Please provide a valid prompt.")
+                await send_message(BOT_ID, "Please provide a valid prompt.")
         elif message.lower().startswith('!image'):
             prompt = validate_prompt(message[7:].strip())
             if prompt:
                 logger.info(f"Generating image for prompt: '{prompt}'")
-                image_url = generate_image(prompt)
+                image_url = await generate_image(prompt)
                 if image_url:
                     logger.info(f"Image generated successfully: {image_url}")
-                    send_message_sync(BOT_ID, f"Image for '{prompt}':", image_url)
+                    await send_message(BOT_ID, f"Image for '{prompt}':", image_url)
                     logger.info("Message with image sent to GroupMe")
                 else:
                     logger.error(f"Failed to generate image for '{prompt}'")
-                    send_message_sync(BOT_ID, f"Failed to generate image for '{prompt}'")
+                    await send_message(BOT_ID, f"Failed to generate image for '{prompt}'")
             else:
                 logger.warning("Invalid prompt for image generation")
-                send_message_sync(BOT_ID, "Please provide a valid prompt for image generation.")
+                await send_message(BOT_ID, "Please provide a valid prompt for image generation.")
         
         return jsonify(success=True), 200
     
@@ -281,16 +280,16 @@ async def get_openai_usage() -> str:
     except Exception as e:
         return f"Error fetching OpenAI usage: {str(e)}"
 
-def generate_image(prompt: str) -> Union[str, None]:
+async def generate_image(prompt: str) -> Union[str, None]:
     try:
         logger.info(f"Attempting to generate image with prompt: {prompt}")
-        response = openai.Image.create(
+        response = await client.images.generate(
             prompt=prompt,
             n=1,
             size="1024x1024"
         )
         logger.info(f"Image generation response: {response}")
-        return response['data'][0]['url']
+        return response.data[0].url
     except Exception as e:
         logger.error(f"Error generating image: {str(e)}")
         return None
@@ -330,7 +329,7 @@ async def generate_ai_response(prompt: str, model: str = "gpt-3.5-turbo", use_we
             ]
 
         logger.debug("Sending request to OpenAI API")
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model=model,
             messages=messages,
             max_tokens=1000 if model == "gpt-4" else 500
@@ -348,15 +347,6 @@ async def generate_ai_response(prompt: str, model: str = "gpt-3.5-turbo", use_we
 def handle_rate_limit_exceeded(e):
     logger.warning(f"Rate limit exceeded: {str(e)}")
     return "Rate limit exceeded. Please try again later.", 429
-
-def send_message_sync(bot_id: str, text: str, image_url: Union[str, None] = None) -> None:
-    asyncio.run(send_message(bot_id, text, image_url))
-
-def get_openai_usage_sync() -> str:
-    return asyncio.run(get_openai_usage())
-
-def generate_ai_response_sync(prompt: str, model: str = "gpt-3.5-turbo", use_web_search: bool = False) -> str:
-    return asyncio.run(generate_ai_response(prompt, model, use_web_search))
 
 if __name__ == "__main__":
     config = Config()

@@ -27,9 +27,11 @@ load_dotenv()
 # Configuration settings
 LOG_FILE_PATH = os.getenv("LOG_FILE_PATH", "groupme_bot.log")
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
-RATE_LIMIT_PER_MINUTE = int(os.getenv("RATE_LIMIT_PER_MINUTE", 10))
-RATE_LIMIT_PER_HOUR = int(os.getenv("RATE_LIMIT_PER_HOUR", 50))
-RATE_LIMIT_PER_DAY = int(os.getenv("RATE_LIMIT_PER_DAY", 200))
+
+# Increased rate limits
+RATE_LIMIT_PER_MINUTE = int(os.getenv("RATE_LIMIT_PER_MINUTE", 50))  # Increased from 10 to 50
+RATE_LIMIT_PER_HOUR = int(os.getenv("RATE_LIMIT_PER_HOUR", 500))     # Increased from 50 to 500
+RATE_LIMIT_PER_DAY = int(os.getenv("RATE_LIMIT_PER_DAY", 5000))      # Increased from 200 to 5000
 MAX_PROMPT_LENGTH = int(os.getenv("MAX_PROMPT_LENGTH", 500))
 
 # Set up logging
@@ -79,10 +81,21 @@ def root():
 def test():
     return "Test route is working."
 
+# Custom key function to exempt localhost from rate limiting
+def custom_key_func():
+    if request.remote_addr == '127.0.0.1':
+        return None  # Exempt localhost from rate limiting
+    return get_remote_address()
+
+# Initialize the limiter with the custom key function
 limiter = Limiter(
-    get_remote_address,
+    key_func=custom_key_func,
     app=application,
-    default_limits=[f"{RATE_LIMIT_PER_DAY} per day", f"{RATE_LIMIT_PER_HOUR} per hour"],
+    default_limits=[
+        f"{RATE_LIMIT_PER_MINUTE} per minute",
+        f"{RATE_LIMIT_PER_HOUR} per hour",
+        f"{RATE_LIMIT_PER_DAY} per day"
+    ],
     storage_uri="memory://"
 )
 
@@ -184,52 +197,59 @@ For any issues or feature requests, please contact the bot administrator.
     return help_message
 
 @application.route('/', methods=['POST'])
+@limiter.limit(
+    f"{RATE_LIMIT_PER_MINUTE} per minute; {RATE_LIMIT_PER_HOUR} per hour; {RATE_LIMIT_PER_DAY} per day",
+    key_func=custom_key_func
+)
 async def webhook():
     data = request.get_json()
+    logger.info(f"Received message from {data.get('sender_type')} - {data.get('name')}: {data.get('text')}")
     
-    # Process the incoming message
-    if data['name'] != 'GroupMe Bot':  # Prevent the bot from responding to itself
-        message = data.get('text', '')
-        if message.lower().startswith('!help'):
-            await send_message(BOT_ID, get_help_message())
-        elif message.lower().startswith('!usage'):
-            usage_info = await get_openai_usage()
-            await send_message(BOT_ID, usage_info)
-        elif message.lower().startswith('!ai4'):
-            prompt = validate_prompt(message[5:].strip())
-            if prompt:
-                logger.info(f"Generating AI4 response for prompt: '{prompt}'")
-                response = await generate_ai_response(prompt, "gpt-4", True)
-                logger.info(f"AI4 response generated: {response}")
-                await send_message(BOT_ID, response)
-            else:
-                await send_message(BOT_ID, "Please provide a valid prompt.")
-        elif message.lower().startswith('!ai'):
-            prompt = validate_prompt(message[4:].strip())
-            if prompt:
-                logger.info(f"Generating AI response for prompt: '{prompt}'")
-                response = await generate_ai_response(prompt, "gpt-3.5-turbo", False)
-                logger.info(f"AI response generated: {response}")
-                await send_message(BOT_ID, response)
-            else:
-                await send_message(BOT_ID, "Please provide a valid prompt.")
-        elif message.lower().startswith('!image'):
-            prompt = validate_prompt(message[7:].strip())
-            if prompt:
-                logger.info(f"Generating image for prompt: '{prompt}'")
-                image_url = await generate_image(prompt)
-                if image_url:
-                    logger.info(f"Image generated successfully: {image_url}")
-                    await send_message(BOT_ID, f"Here's your image for '{prompt}'", image_url)
-                    logger.info("Message with image sent to GroupMe")
-                else:
-                    logger.error(f"Failed to generate image for '{prompt}'")
-                    await send_message(BOT_ID, f"Sorry, I couldn't generate an image for '{prompt}'")
-            else:
-                logger.warning("Invalid prompt for image generation")
-                await send_message(BOT_ID, "Please provide a valid prompt for image generation.")
-        
+    # Ignore messages sent by bots (including itself)
+    if data.get('sender_type') == 'bot':
+        logger.debug("Message sent by bot; ignoring.")
         return jsonify(success=True), 200
+    
+    # Process messages from users
+    message = data.get('text', '')
+    if message.lower().startswith('!help'):
+        await send_message(BOT_ID, get_help_message())
+    elif message.lower().startswith('!usage'):
+        usage_info = await get_openai_usage()
+        await send_message(BOT_ID, usage_info)
+    elif message.lower().startswith('!ai4'):
+        prompt = validate_prompt(message[5:].strip())
+        if prompt:
+            logger.info(f"Generating AI4 response for prompt: '{prompt}'")
+            response = await generate_ai_response(prompt, "gpt-4", True)
+            logger.info(f"AI4 response generated: {response}")
+            await send_message(BOT_ID, response)
+        else:
+            await send_message(BOT_ID, "Please provide a valid prompt.")
+    elif message.lower().startswith('!ai'):
+        prompt = validate_prompt(message[4:].strip())
+        if prompt:
+            logger.info(f"Generating AI response for prompt: '{prompt}'")
+            response = await generate_ai_response(prompt, "gpt-3.5-turbo", False)
+            logger.info(f"AI response generated: {response}")
+            await send_message(BOT_ID, response)
+        else:
+            await send_message(BOT_ID, "Please provide a valid prompt.")
+    elif message.lower().startswith('!image'):
+        prompt = validate_prompt(message[7:].strip())
+        if prompt:
+            logger.info(f"Generating image for prompt: '{prompt}'")
+            image_url = await generate_image(prompt)
+            if image_url:
+                logger.info(f"Image generated successfully: {image_url}")
+                await send_message(BOT_ID, f"Here's your image for '{prompt}'", image_url)
+                logger.info("Message with image sent to GroupMe")
+            else:
+                logger.error(f"Failed to generate image for '{prompt}'")
+                await send_message(BOT_ID, f"Sorry, I couldn't generate an image for '{prompt}'")
+        else:
+            logger.warning("Invalid prompt for image generation")
+            await send_message(BOT_ID, "Please provide a valid prompt for image generation.")
     
     return jsonify(success=True), 200
 
@@ -257,12 +277,18 @@ async def get_openai_usage() -> str:
             response.raise_for_status()
             usage_data = response.json()
 
-        total_tokens = sum(item.get('n_context_tokens_total', 0) + item.get('n_generated_tokens_total', 0) 
-                           for item in usage_data.get('data', []))
-        gpt35_tokens = sum(item.get('n_context_tokens_total', 0) + item.get('n_generated_tokens_total', 0) 
-                           for item in usage_data.get('data', []) if 'gpt-3.5' in item.get('snapshot_id', ''))
-        gpt4_tokens = sum(item.get('n_context_tokens_total', 0) + item.get('n_generated_tokens_total', 0) 
-                          for item in usage_data.get('data', []) if 'gpt-4' in item.get('snapshot_id', ''))
+        total_tokens = sum(
+            item.get('n_context_tokens_total', 0) + item.get('n_generated_tokens_total', 0)
+            for item in usage_data.get('data', [])
+        )
+        gpt35_tokens = sum(
+            item.get('n_context_tokens_total', 0) + item.get('n_generated_tokens_total', 0)
+            for item in usage_data.get('data', []) if 'gpt-3.5' in item.get('snapshot_id', '')
+        )
+        gpt4_tokens = sum(
+            item.get('n_context_tokens_total', 0) + item.get('n_generated_tokens_total', 0)
+            for item in usage_data.get('data', []) if 'gpt-4' in item.get('snapshot_id', '')
+        )
         dalle_images = sum(item.get('num_images', 0) for item in usage_data.get('dalle_api_data', []))
 
         gpt35_cost = (gpt35_tokens / 1000) * 0.002
@@ -270,13 +296,15 @@ async def get_openai_usage() -> str:
         dalle_cost = dalle_images * 0.02
         total_cost = gpt35_cost + gpt4_cost + dalle_cost
 
-        return f"OpenAI API Usage Summary for {date_str}:\n" \
-               f"Total tokens: {total_tokens:,}\n" \
-               f"GPT-3.5 tokens: {gpt35_tokens:,}\n" \
-               f"GPT-4 tokens: {gpt4_tokens:,}\n" \
-               f"DALL-E images: {dalle_images}\n" \
-               f"Estimated cost: ${total_cost:.2f}\n" \
-               f"(GPT-3.5: ${gpt35_cost:.2f}, GPT-4: ${gpt4_cost:.2f}, DALL-E: ${dalle_cost:.2f})"
+        return (
+            f"OpenAI API Usage Summary for {date_str}:\n"
+            f"Total tokens: {total_tokens:,}\n"
+            f"GPT-3.5 tokens: {gpt35_tokens:,}\n"
+            f"GPT-4 tokens: {gpt4_tokens:,}\n"
+            f"DALL-E images: {dalle_images}\n"
+            f"Estimated cost: ${total_cost:.2f}\n"
+            f"(GPT-3.5: ${gpt35_cost:.2f}, GPT-4: ${gpt4_cost:.2f}, DALL-E: ${dalle_cost:.2f})"
+        )
 
     except Exception as e:
         return f"Error fetching OpenAI usage: {str(e)}"
@@ -306,6 +334,7 @@ def search_web(query: str) -> Union[List[Dict], None]:
         print(f"Error searching web: {e}")
         return None
 
+# Ensure logging is set to DEBUG level
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
@@ -318,12 +347,26 @@ async def generate_ai_response(prompt: str, model: str = "gpt-3.5-turbo", use_we
             search_results = search_web(prompt)
             logger.debug(f"Web search results: {search_results}")
             limited_results = search_results[:3] if search_results else []
-            search_content = "\n".join([f"- {result['title']}: {result['content'][:200]}..." for result in limited_results])
+            search_content = "\n".join(
+                [f"- {result['title']}: {result['content'][:200]}..." for result in limited_results]
+            )
             logger.info(f"Web search results: {search_content}")
             
             messages = [
-                {"role": "system", "content": "You are an advanced AI assistant with access to recent web information. Provide accurate and helpful responses based on the given web search results and your knowledge."},
-                {"role": "user", "content": f"Web search results for '{prompt}':\n{search_content}" if search_content else "No search results found."},
+                {
+                    "role": "system",
+                    "content": (
+                        "You are an advanced AI assistant with access to recent web information. "
+                        "Provide accurate and helpful responses based on the given web search results and your knowledge."
+                    )
+                },
+                {
+                    "role": "user",
+                    "content": (
+                        f"Web search results for '{prompt}':\n{search_content}"
+                        if search_content else "No search results found."
+                    )
+                },
                 {"role": "user", "content": prompt}
             ]
         else:

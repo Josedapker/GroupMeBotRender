@@ -181,6 +181,10 @@ async def send_message(bot_id: str, text: str, image_url: Union[str, None] = Non
             except httpx.RequestError as e:
                 print(f"Error sending message part {i+1}: {str(e)}")
                 logger.error(f"Full error details: {e.request.url}, {e.request.headers}, {e.request.content}")
+                logger.error(f"Response content: {response.content}")
+            except Exception as e:
+                logger.error(f"Unexpected error in send_message: {str(e)}")
+                logger.error(traceback.format_exc())
             
             if i < len(message_parts) - 1:
                 await asyncio.sleep(1)
@@ -264,7 +268,7 @@ async def webhook():
         return jsonify(success=False, error="Invalid JSON"), 400
     except Exception as e:
         logger.error(f"Unexpected error in webhook: {str(e)}")
-        logger.error(traceback.format_exc())  # Add this line to get the full traceback
+        logger.error(traceback.format_exc())
         return jsonify(success=False, error="Internal server error"), 500
 
 def validate_prompt(prompt: str) -> str:
@@ -408,6 +412,10 @@ async def generate_ai_response(prompt: str, model: str = "gpt-3.5-turbo", use_we
 def handle_rate_limit_exceeded(e):
     logger.warning(f"Rate limit exceeded: {str(e)}")
     return "Rate limit exceeded. Please try again later.", 429
+
+if not BOT_ID:
+    logger.error("BOT_ID is not set. Please check your environment variables.")
+    sys.exit(1)
 
 if __name__ == "__main__":
     config = Config()

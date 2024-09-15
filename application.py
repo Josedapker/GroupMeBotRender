@@ -51,6 +51,7 @@ logger = setup_logging()
 
 BOT_ID = os.getenv("BOT_ID")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+print(f"Loaded API key: {OPENAI_API_KEY[:5]}...{OPENAI_API_KEY[-5:]}")
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 GROUPME_ACCESS_TOKEN = os.getenv("GROUPME_ACCESS_TOKEN")
 

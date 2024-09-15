@@ -215,12 +215,17 @@ def webhook():
             elif message.startswith('!image'):
                 prompt = validate_prompt(message[7:].strip())
                 if prompt:
+                    logger.info(f"Generating image for prompt: '{prompt}'")
                     image_url = generate_image(prompt)
                     if image_url:
+                        logger.info(f"Image generated successfully: {image_url}")
                         send_message_sync(BOT_ID, f"Image for '{prompt}':", image_url)
+                        logger.info("Message with image sent to GroupMe")
                     else:
+                        logger.error(f"Failed to generate image for '{prompt}'")
                         send_message_sync(BOT_ID, f"Failed to generate image for '{prompt}'")
                 else:
+                    logger.warning("Invalid prompt for image generation")
                     send_message_sync(BOT_ID, "Please provide a valid prompt for image generation.")
         return jsonify({"success": True})
     except Exception as e:

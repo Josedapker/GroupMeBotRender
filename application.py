@@ -21,6 +21,7 @@ from asgiref.wsgi import WsgiToAsgi
 from hypercorn.asyncio import serve
 from hypercorn.config import Config
 import html
+import re
 
 # Load environment variables
 load_dotenv()
@@ -82,15 +83,11 @@ def root():
 def test():
     return "Test route is working."
 
-# Custom key function to exempt localhost from rate limiting
-def custom_key_func():
-    if request.remote_addr == '127.0.0.1':
-        return None  # Exempt localhost from rate limiting
-    return get_remote_address() or 'default'  # Use 'default' if get_remote_address() returns None
+def get_rate_limit_key():
+    return get_remote_address() or 'default'
 
-# Initialize the limiter with the custom key function
 limiter = Limiter(
-    key_func=custom_key_func,
+    key_func=get_rate_limit_key,
     app=application,
     default_limits=[
         f"{RATE_LIMIT_PER_MINUTE} per minute",
@@ -106,14 +103,25 @@ def split_message(text: str, limit: int = 1000) -> List[str]:
         if len(text) <= limit:
             parts.append(text)
             break
-        part = text[:limit]
-        last_space = part.rfind(' ')
-        if last_space == -1:
-            parts.append(part)
-            text = text[limit:]
-        else:
-            parts.append(part[:last_space])
-            text = text[last_space+1:]
+        
+        # Find the last occurrence of a sentence-ending punctuation or a newline within the limit
+        split_index = max(
+            text.rfind('.', 0, limit),
+            text.rfind('!', 0, limit),
+            text.rfind('?', 0, limit),
+            text.rfind('\n', 0, limit)
+        )
+        
+        if split_index == -1 or split_index == 0:
+            # If no suitable split point is found, split at the last space
+            split_index = text.rfind(' ', 0, limit)
+        
+        if split_index == -1:
+            # If still no split point found, split at the limit
+            split_index = limit
+        
+        parts.append(text[:split_index])
+        text = text[split_index:].lstrip()
     return parts
 
 async def upload_image_to_groupme(image_url: str) -> Union[str, None]:
@@ -171,23 +179,36 @@ async def send_message(bot_id: str, text: str, image_url: Union[str, None] = Non
             data = {
                 "bot_id": bot_id,
                 "text": escaped_part,
-                "attachments": attachment if i == 0 else []
             }
+            if i == 0 and attachment:
+                data["attachments"] = attachment
 
-            try:
-                response = await client.post(url, json=data)
-                response.raise_for_status()
-                print(f"Message part {i+1} sent successfully!")
-            except httpx.RequestError as e:
-                print(f"Error sending message part {i+1}: {str(e)}")
-                logger.error(f"Full error details: {e.request.url}, {e.request.headers}, {e.request.content}")
-                logger.error(f"Response content: {response.content}")
-            except Exception as e:
-                logger.error(f"Unexpected error in send_message: {str(e)}")
-                logger.error(traceback.format_exc())
+            retry_count = 0
+            max_retries = 3
+            while retry_count < max_retries:
+                try:
+                    response = await client.post(url, json=data)
+                    response.raise_for_status()
+                    print(f"Message part {i+1} sent successfully!")
+                    break  # Exit the retry loop if successful
+                except httpx.RequestError as e:
+                    print(f"Error sending message part {i+1}: {str(e)}")
+                    logger.error(f"Full error details: {e.request.url}, {e.request.headers}, {e.request.content}")
+                    if response:
+                        logger.error(f"Response content: {response.content}")
+                    retry_count += 1
+                    if retry_count < max_retries:
+                        await asyncio.sleep(1)  # Wait before retrying
+                except Exception as e:
+                    logger.error(f"Unexpected error in send_message: {str(e)}")
+                    logger.error(traceback.format_exc())
+                    break  # Exit the retry loop for unexpected errors
             
-            if i < len(message_parts) - 1:
-                await asyncio.sleep(1)
+            # Wait between message parts, with a longer delay after the first part
+            if i == 0:
+                await asyncio.sleep(2)  # Longer delay after the first part
+            elif i < len(message_parts) - 1:
+                await asyncio.sleep(1)  # Shorter delay between subsequent parts
 
 def get_help_message() -> str:
     help_message = """
@@ -206,7 +227,7 @@ For any issues or feature requests, please contact the bot administrator.
 @application.route('/', methods=['POST'])
 @limiter.limit(
     f"{RATE_LIMIT_PER_MINUTE} per minute; {RATE_LIMIT_PER_HOUR} per hour; {RATE_LIMIT_PER_DAY} per day",
-    key_func=custom_key_func
+    key_func=get_rate_limit_key
 )
 async def webhook():
     try:
@@ -414,7 +435,7 @@ def handle_rate_limit_exceeded(e):
     return "Rate limit exceeded. Please try again later.", 429
 
 if not BOT_ID:
-    logger.error("BOT_ID is not set. Please check your environment variables.")
+    logger.error("BOT_ID is not set or empty. Please check your environment variables.")
     sys.exit(1)
 
 if __name__ == "__main__":

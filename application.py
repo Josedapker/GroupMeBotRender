@@ -182,56 +182,55 @@ For any issues or feature requests, please contact the bot administrator.
 """
     return help_message
 
-@application.route('/webhook', methods=['POST'])
+@application.route('/', methods=['POST'])
 def webhook():
-    try:
-        data = request.get_json()
-        logger.info(f"Webhook received: {data}")
-        if data and 'name' in data and data['name'] != 'AI Bot':
-            message = data.get('text', '').lower()
-            if message.startswith('!help'):
-                send_message_sync(BOT_ID, get_help_message())
-            elif message.startswith('!usage'):
-                usage_info = get_openai_usage_sync()
-                send_message_sync(BOT_ID, usage_info)
-            elif message.startswith('!ai4'):
-                prompt = validate_prompt(message[5:].strip())
-                if prompt:
-                    logger.info(f"Generating AI4 response for prompt: '{prompt}'")
-                    response = generate_ai_response_sync(prompt, "gpt-4", True)
-                    logger.info(f"AI4 response generated: {response}")
-                    send_message_sync(BOT_ID, response)
+    data = request.get_json()
+    
+    # Process the incoming message
+    if data['name'] != 'GroupMe Bot':  # Prevent the bot from responding to itself
+        message = data.get('text', '').lower()
+        if message.startswith('!help'):
+            send_message_sync(BOT_ID, get_help_message())
+        elif message.startswith('!usage'):
+            usage_info = get_openai_usage_sync()
+            send_message_sync(BOT_ID, usage_info)
+        elif message.startswith('!ai4'):
+            prompt = validate_prompt(message[5:].strip())
+            if prompt:
+                logger.info(f"Generating AI4 response for prompt: '{prompt}'")
+                response = generate_ai_response_sync(prompt, "gpt-4", True)
+                logger.info(f"AI4 response generated: {response}")
+                send_message_sync(BOT_ID, response)
+            else:
+                send_message_sync(BOT_ID, "Please provide a valid prompt.")
+        elif message.startswith('!ai'):
+            prompt = validate_prompt(message[4:].strip())
+            if prompt:
+                logger.info(f"Generating AI response for prompt: '{prompt}'")
+                response = generate_ai_response_sync(prompt, "gpt-3.5-turbo", False)
+                logger.info(f"AI response generated: {response}")
+                send_message_sync(BOT_ID, response)
+            else:
+                send_message_sync(BOT_ID, "Please provide a valid prompt.")
+        elif message.startswith('!image'):
+            prompt = validate_prompt(message[7:].strip())
+            if prompt:
+                logger.info(f"Generating image for prompt: '{prompt}'")
+                image_url = generate_image(prompt)
+                if image_url:
+                    logger.info(f"Image generated successfully: {image_url}")
+                    send_message_sync(BOT_ID, f"Image for '{prompt}':", image_url)
+                    logger.info("Message with image sent to GroupMe")
                 else:
-                    send_message_sync(BOT_ID, "Please provide a valid prompt.")
-            elif message.startswith('!ai'):
-                prompt = validate_prompt(message[4:].strip())
-                if prompt:
-                    logger.info(f"Generating AI response for prompt: '{prompt}'")
-                    response = generate_ai_response_sync(prompt, "gpt-3.5-turbo", False)
-                    logger.info(f"AI response generated: {response}")
-                    send_message_sync(BOT_ID, response)
-                else:
-                    send_message_sync(BOT_ID, "Please provide a valid prompt.")
-            elif message.startswith('!image'):
-                prompt = validate_prompt(message[7:].strip())
-                if prompt:
-                    logger.info(f"Generating image for prompt: '{prompt}'")
-                    image_url = generate_image(prompt)
-                    if image_url:
-                        logger.info(f"Image generated successfully: {image_url}")
-                        send_message_sync(BOT_ID, f"Image for '{prompt}':", image_url)
-                        logger.info("Message with image sent to GroupMe")
-                    else:
-                        logger.error(f"Failed to generate image for '{prompt}'")
-                        send_message_sync(BOT_ID, f"Failed to generate image for '{prompt}'")
-                else:
-                    logger.warning("Invalid prompt for image generation")
-                    send_message_sync(BOT_ID, "Please provide a valid prompt for image generation.")
-        return jsonify({"success": True})
-    except Exception as e:
-        logger.error(f"Error in webhook: {str(e)}")
-        logger.error(traceback.format_exc())
-        return jsonify({"success": False, "error": str(e)}), 500
+                    logger.error(f"Failed to generate image for '{prompt}'")
+                    send_message_sync(BOT_ID, f"Failed to generate image for '{prompt}'")
+            else:
+                logger.warning("Invalid prompt for image generation")
+                send_message_sync(BOT_ID, "Please provide a valid prompt for image generation.")
+        
+        return jsonify(success=True), 200
+    
+    return jsonify(success=True), 200
 
 def validate_prompt(prompt: str) -> str:
     prompt = prompt.strip()

@@ -220,11 +220,11 @@ async def webhook():
                 image_url = await generate_image(prompt)
                 if image_url:
                     logger.info(f"Image generated successfully: {image_url}")
-                    await send_message(BOT_ID, f"Image for '{prompt}':", image_url)
+                    await send_message(BOT_ID, f"Here's your image for '{prompt}'", image_url)
                     logger.info("Message with image sent to GroupMe")
                 else:
                     logger.error(f"Failed to generate image for '{prompt}'")
-                    await send_message(BOT_ID, f"Failed to generate image for '{prompt}'")
+                    await send_message(BOT_ID, f"Sorry, I couldn't generate an image for '{prompt}'")
             else:
                 logger.warning("Invalid prompt for image generation")
                 await send_message(BOT_ID, "Please provide a valid prompt for image generation.")
@@ -284,13 +284,16 @@ async def get_openai_usage() -> str:
 async def generate_image(prompt: str) -> Union[str, None]:
     try:
         logger.info(f"Attempting to generate image with prompt: {prompt}")
-        response = await client.images.generate(
+        response = client.images.generate(
+            model="dall-e-3",
             prompt=prompt,
+            size="1024x1024",
+            quality="standard",
             n=1,
-            size="1024x1024"
         )
-        logger.info(f"Image generation response: {response}")
-        return response.data[0].url
+        image_url = response.data[0].url
+        logger.info(f"Image generated successfully: {image_url}")
+        return image_url
     except Exception as e:
         logger.error(f"Error generating image: {str(e)}")
         return None

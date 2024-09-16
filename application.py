@@ -190,26 +190,30 @@ For any issues or feature requests, please contact the bot administrator.
 def webhook():
     try:
         data = request.get_json(force=True)
-        logger.info(f"Received message: {json.dumps(data)}")
+        logger.info(f"Received data: {json.dumps(data)}")
         
         # Ignore messages sent by bots (including itself)
         if data.get('sender_type') == 'bot':
-            logger.debug("Message sent by bot; ignoring.")
+            logger.debug("Message sent by a bot; ignoring.")
             return jsonify(success=True), 200
         
         text = data.get('text', '').lower().strip()
+        logger.info(f"Received command: {text}")
         
         if text == '!market':
+            logger.info("Processing !market command.")
             market_summary = get_top_movers()
+            logger.debug(f"Market summary: {market_summary}")
             asyncio.run(send_message(BOT_ID, market_summary))
+            logger.info("Market summary sent successfully.")
             return jsonify(success=True, message="Market summary sent to GroupMe"), 200
         
-        # ... (handle other commands)
+        # Handle other commands here...
     
         return jsonify(success=True), 200
     
     except json.JSONDecodeError:
-        logger.error("Failed to parse JSON from request")
+        logger.error("Failed to parse JSON from request.")
         return jsonify(success=False, error="Invalid JSON"), 400
     except Exception as e:
         logger.error(f"Unexpected error in webhook: {str(e)}")
@@ -603,33 +607,42 @@ def format_output(economic_calendar, earnings_calendar, top_stocks, top_news):
     
     return output
 
-import os
-import requests
-
 def get_top_movers():
+    if not FINNHUB_API_KEY:
+        logger.error("FINNHUB_API_KEY is not set.")
+        return "Market data unavailable: Missing API key."
+    
     url = f'https://finnhub.io/api/v1/stock/top-movers?exchange=US&token={FINNHUB_API_KEY}'
-    response = requests.get(url)
-    if response.status_code != 200:
-        logger.error(f"Error fetching top movers: {response.status_code}")
-        return "Failed to fetch market data."
-
-    data = response.json()
+    try:
+        response = requests.get(url)
+        if response.status_code != 200:
+            logger.error(f"Error fetching top movers: {response.status_code} - {response.text}")
+            return "Failed to fetch market data."
     
-    top_gainers = data.get('gainers', [])[:5]  # Get top 5 gainers
-    top_losers = data.get('losers', [])[:5]    # Get top 5 losers
-    
-    # Format the data
-    gainers_text = '\n'.join([f"{idx+1}. {stock['symbol']} (+{stock['percent_change']}%)" for idx, stock in enumerate(top_gainers)])
-    losers_text = '\n'.join([f"{idx+1}. {stock['symbol']} (-{stock['percent_change']}%)" for idx, stock in enumerate(top_losers)])
-    
-    market_summary = f"""
+        data = response.json()
+        
+        top_gainers = data.get('gainers', [])[:5]  # Get top 5 gainers
+        top_losers = data.get('losers', [])[:5]    # Get top 5 losers
+        
+        if not top_gainers and not top_losers:
+            logger.warning("No gainers or losers data received from Finnhub.")
+            return "No market movers data available."
+        
+        # Format the data
+        gainers_text = '\n'.join([f"{idx+1}. {stock['symbol']} (+{stock['percent_change']}%)" for idx, stock in enumerate(top_gainers)])
+        losers_text = '\n'.join([f"{idx+1}. {stock['symbol']} (-{stock['percent_change']}%)" for idx, stock in enumerate(top_losers)])
+        
+        market_summary = f"""
 📈 **Top Gainers:**
 {gainers_text}
 
 📉 **Top Losers:**
 {losers_text}
 """
-    return market_summary
+        return market_summary
+    except Exception as e:
+        logger.error(f"Exception occurred while fetching top movers: {str(e)}")
+        return "Error fetching market data."
 
 if not BOT_ID:
     logger.error("BOT_ID is not set or empty. Please check your environment variables.")

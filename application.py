@@ -73,12 +73,14 @@ print(f"Loaded API key: {OPENAI_API_KEY[:5]}...{OPENAI_API_KEY[-5:]}")
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 GROUPME_ACCESS_TOKEN = os.getenv("GROUPME_ACCESS_TOKEN")
 NEWS_API_KEY = os.getenv("NEWS_API_KEY")
+FINNHUB_API_KEY = os.getenv('FINNHUB_API_KEY')
 
 print(f"BOT_ID loaded: {BOT_ID is not None}")
 print(f"OPENAI_API_KEY loaded: {OPENAI_API_KEY is not None}")
 print(f"TAVILY_API_KEY loaded: {TAVILY_API_KEY is not None}")
 print(f"GROUPME_ACCESS_TOKEN loaded: {GROUPME_ACCESS_TOKEN is not None}")
 print(f"NEWS_API_KEY loaded: {NEWS_API_KEY is not None}")
+print(f"FINNHUB_API_KEY loaded: {FINNHUB_API_KEY is not None}")
 
 # Remove any logging of the actual API key
 print("OpenAI API Key loaded successfully.")
@@ -184,11 +186,7 @@ For any issues or feature requests, please contact the bot administrator.
 """
     return help_message
 
-@application.route('/', methods=['POST'])
-@limiter.limit(
-    f"{RATE_LIMIT_PER_MINUTE} per minute; {RATE_LIMIT_PER_HOUR} per hour; {RATE_LIMIT_PER_DAY} per day",
-    key_func=get_rate_limit_key
-)
+@application.route('/webhook', methods=['POST'])
 def webhook():
     try:
         data = request.get_json(force=True)
@@ -202,17 +200,14 @@ def webhook():
         text = data.get('text', '').lower().strip()
         
         if text == '!market':
-            market_summary = asyncio.run(generate_market_summary())
-            if market_summary:
-                asyncio.run(send_message(BOT_ID, market_summary))
-                return jsonify(success=True, message="Market summary sent to GroupMe"), 200
-            else:
-                return jsonify(success=False, message="Failed to generate market summary"), 500
-
+            market_summary = get_top_movers()
+            asyncio.run(send_message(BOT_ID, market_summary))
+            return jsonify(success=True, message="Market summary sent to GroupMe"), 200
+        
         # ... (handle other commands)
-
+    
         return jsonify(success=True), 200
-
+    
     except json.JSONDecodeError:
         logger.error("Failed to parse JSON from request")
         return jsonify(success=False, error="Invalid JSON"), 400
@@ -607,6 +602,34 @@ def format_output(economic_calendar, earnings_calendar, top_stocks, top_news):
         output += "No news stories available.\n"
     
     return output
+
+import os
+import requests
+
+def get_top_movers():
+    url = f'https://finnhub.io/api/v1/stock/top-movers?exchange=US&token={FINNHUB_API_KEY}'
+    response = requests.get(url)
+    if response.status_code != 200:
+        logger.error(f"Error fetching top movers: {response.status_code}")
+        return "Failed to fetch market data."
+
+    data = response.json()
+    
+    top_gainers = data.get('gainers', [])[:5]  # Get top 5 gainers
+    top_losers = data.get('losers', [])[:5]    # Get top 5 losers
+    
+    # Format the data
+    gainers_text = '\n'.join([f"{idx+1}. {stock['symbol']} (+{stock['percent_change']}%)" for idx, stock in enumerate(top_gainers)])
+    losers_text = '\n'.join([f"{idx+1}. {stock['symbol']} (-{stock['percent_change']}%)" for idx, stock in enumerate(top_losers)])
+    
+    market_summary = f"""
+📈 **Top Gainers:**
+{gainers_text}
+
+📉 **Top Losers:**
+{losers_text}
+"""
+    return market_summary
 
 if not BOT_ID:
     logger.error("BOT_ID is not set or empty. Please check your environment variables.")

@@ -106,7 +106,7 @@ limiter = Limiter(
     storage_uri="memory://"
 )
 
-def split_message(text: str, limit: int = 1000) -> List[str]:
+async def split_message(text: str, limit: int = 1000) -> List[str]:
     parts = []
     while text:
         if len(text) <= limit:
@@ -133,76 +133,16 @@ def split_message(text: str, limit: int = 1000) -> List[str]:
         text = text[split_index:].lstrip()
     return parts
 
-async def upload_image_to_groupme(image_url: str) -> Union[str, None]:
-    try:
-        print(f"Downloading image from: {image_url}")
-        async with httpx.AsyncClient() as client:
-            response = await client.get(image_url)
-            response.raise_for_status()
-        print("Image downloaded successfully")
-
-        img = Image.open(BytesIO(response.content))
-        img_byte_arr = BytesIO()
-        img.save(img_byte_arr, format='JPEG')
-        img_byte_arr = img_byte_arr.getvalue()
-
-        print("Image converted to JPEG")
-
-        upload_url = 'https://image.groupme.com/pictures'
-        headers = {
-            'X-Access-Token': GROUPME_ACCESS_TOKEN,
-            'Content-Type': 'image/jpeg'
-        }
-
-        print("Uploading image to GroupMe")
-        async with httpx.AsyncClient() as client:
-            response = await client.post(upload_url, content=img_byte_arr, headers=headers)
-            response.raise_for_status()
-        print("Image uploaded successfully")
-        return response.json()['payload']['url']
-    except httpx.RequestError as e:
-        print(f"Failed to upload image: {str(e)}")
-        return None
-    except Exception as e:
-        print(f"An unexpected error occurred: {str(e)}")
-        return None
-
-async def send_message(bot_id, text):
-    url = 'https://api.groupme.com/v3/bots/post'
-    data = {
-        'bot_id': bot_id,
-        'text': text
-    }
-    async with httpx.AsyncClient() as client:
-        response = await client.post(url, json=data)
-    response.raise_for_status()
-    return response
-
-async def send_message(bot_id: str, text: str, image_url: Union[str, None] = None) -> None:
+async def send_message(bot_id: str, text: str) -> None:
     url = "https://api.groupme.com/v3/bots/post"
-    
-    attachment = []
-    if image_url:
-        print(f"Attempting to upload image: {image_url}")
-        groupme_image_url = await upload_image_to_groupme(image_url)
-        if groupme_image_url:
-            print(f"Image uploaded successfully to GroupMe: {groupme_image_url}")
-            attachment = [{"type": "image", "url": groupme_image_url}]
-        else:
-            print("Failed to upload image, sending message without image.")
-
-    message_parts = split_message(text)
+    message_parts = await split_message(text)
     
     async with httpx.AsyncClient() as client:
         for i, part in enumerate(message_parts):
-            escaped_part = html.escape(part)  # Escape special characters
             data = {
                 "bot_id": bot_id,
-                "text": escaped_part,
+                "text": part,
             }
-            if i == 0 and attachment:
-                data["attachments"] = attachment
-
             retry_count = 0
             max_retries = 3
             while retry_count < max_retries:
@@ -213,22 +153,13 @@ async def send_message(bot_id: str, text: str, image_url: Union[str, None] = Non
                     break  # Exit the retry loop if successful
                 except httpx.RequestError as e:
                     print(f"Error sending message part {i+1}: {str(e)}")
-                    logger.error(f"Full error details: {e.request.url}, {e.request.headers}, {e.request.content}")
-                    if response:
-                        logger.error(f"Response content: {response.content}")
                     retry_count += 1
                     if retry_count < max_retries:
                         await asyncio.sleep(1)  # Wait before retrying
-                except Exception as e:
-                    logger.error(f"Unexpected error in send_message: {str(e)}")
-                    logger.error(traceback.format_exc())
-                    break  # Exit the retry loop for unexpected errors
             
-            # Wait between message parts, with a longer delay after the first part
-            if i == 0:
-                await asyncio.sleep(2)  # Longer delay after the first part
-            elif i < len(message_parts) - 1:
-                await asyncio.sleep(1)  # Shorter delay between subsequent parts
+            # Wait between message parts to avoid rate limiting
+            if i < len(message_parts) - 1:
+                await asyncio.sleep(1)
 
 def get_help_message() -> str:
     help_message = """

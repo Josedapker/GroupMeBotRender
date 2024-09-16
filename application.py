@@ -35,6 +35,7 @@ import aiohttp
 from functools import lru_cache
 import random
 import nest_asyncio
+import psutil
 
 # Load environment variables
 load_dotenv()
@@ -362,52 +363,23 @@ def handle_rate_limit_exceeded(e):
     logger.warning(f"Rate limit exceeded: {str(e)}")
     return "Rate limit exceeded. Please try again later.", 429
 
-@lru_cache(maxsize=100)
-def get_stock_data(symbol, data):
-    try:
-        current_price = data.get('currentPrice')
-        previous_close = data.get('previousClose')
-        
-        if current_price is None or previous_close is None:
-            logging.warning(f"Missing price data for {symbol}. Current: {current_price}, Previous: {previous_close}")
-            return None
-        
-        percent_change = ((current_price - previous_close) / previous_close) * 100
-        volume = data.get('volume', 0)
-        
-        logging.info(f"Successfully fetched data for {symbol}")
-        return {
-            'Symbol': symbol,
-            'Percent Change': percent_change,
-            'Volume': volume
-        }
-    except Exception as e:
-        logging.error(f"Error processing stock data for {symbol}: {str(e)}")
-        return None
-
 # Create a ThreadPoolExecutor at the module level
 executor = ThreadPoolExecutor(max_workers=10)
 
 def get_stock_data(symbol, retries=3, delay=2):
-    # Your existing synchronous get_stock_data implementation
-    # (Copied from your StockSummary1.1.py)
     for attempt in range(retries):
         try:
             ticker = yf.Ticker(symbol)
-            info = ticker.info
-            if not info:
-                logging.warning(f"No info returned for {symbol}")
+            # Fetch minimal data
+            data = ticker.history(period='2d', interval='1d')
+            if data.empty or len(data) < 2:
+                logging.warning(f"Not enough data returned for {symbol}")
                 return None
             
-            current_price = info.get('currentPrice')
-            previous_close = info.get('previousClose')
-            
-            if current_price is None or previous_close is None:
-                logging.warning(f"Missing price data for {symbol}. Current: {current_price}, Previous: {previous_close}")
-                return None
-            
-            percent_change = ((current_price - previous_close) / previous_close) * 100
-            volume = info.get('volume', 0)
+            current_price = data['Close'].iloc[-1]
+            previous_close = data['Close'].iloc[-2]
+            percent_change = ((current_price - previous_close) / previous_close) * 100 if previous_close != 0 else 0
+            volume = data['Volume'].iloc[-1]
             
             logging.info(f"Successfully fetched data for {symbol}")
             return {
@@ -432,25 +404,25 @@ async def get_top_stocks(symbols, batch_size=50):
     all_results = []
     failed_symbols = []
     
-    sem = asyncio.Semaphore(20)  # Limit concurrent tasks to prevent rate limiting
-    
-    async def safe_fetch(symbol):
-        async with sem:
-            try:
-                result = await fetch_stock_data(symbol)
-                if result:
-                    all_results.append(result)
-                else:
+    for i in range(0, len(symbols), batch_size):
+        batch = symbols[i:i+batch_size]
+        sem = asyncio.Semaphore(5)
+        
+        async def safe_fetch(symbol):
+            async with sem:
+                try:
+                    result = await fetch_stock_data(symbol)
+                    if result:
+                        all_results.append(result)
+                    else:
+                        failed_symbols.append(symbol)
+                except Exception as e:
+                    logging.error(f"Error fetching data for {symbol}: {str(e)}")
                     failed_symbols.append(symbol)
-            except Exception as e:
-                logging.error(f"Error fetching data for {symbol}: {str(e)}")
-                failed_symbols.append(symbol)
-                
-    tasks = []
-    for symbol in symbols:
-        tasks.append(asyncio.create_task(safe_fetch(symbol)))
-    
-    await asyncio.gather(*tasks)
+        
+        tasks = [asyncio.create_task(safe_fetch(symbol)) for symbol in batch]
+        await asyncio.gather(*tasks)
+        await asyncio.sleep(1)  # Short delay between batches
     
     df = pd.DataFrame(all_results)
     if df.empty:
@@ -535,6 +507,11 @@ def get_economic_calendar(start_date, end_date):
         logger.error(f"Error processing economic calendar data: {e}")
         return pd.DataFrame()
 
+def log_memory_usage():
+    process = psutil.Process()
+    mem = process.memory_info().rss / (1024 ** 2)  # Memory usage in MB
+    logging.info(f"Current memory usage: {mem:.2f} MB")
+
 async def generate_market_summary():
     try:
         # Define date range for the week
@@ -543,33 +520,37 @@ async def generate_market_summary():
         end_date = (today + timedelta(days=7)).strftime('%Y-%m-%d')
     
         # Fetch all S&P 500 symbols
+        logging.info("Before fetching stock symbols")
+        log_memory_usage()
         all_symbols = get_sp500_symbols()
-        logger.info(f"Fetched {len(all_symbols)} S&P 500 symbols")
+        logging.info(f"Fetched {len(all_symbols)} S&P 500 symbols")
+        log_memory_usage()
     
         # Fetch economic calendar
         economic_calendar = get_economic_calendar(start_date, end_date)
     
         # Fetch top stocks asynchronously
         top_stocks, failed_symbols = await get_top_stocks(all_symbols)
-        logger.info(f"Fetched top stocks. DataFrame empty: {top_stocks.empty}")
+        logging.info("After fetching stock data")
+        log_memory_usage()
         
         if top_stocks.empty:
-            logger.warning("Unable to fetch stock data.")
+            logging.warning("Unable to fetch stock data.")
             return "Unable to fetch stock data at this time."
     
         # Fetch top news
         top_news = get_top_news()
-        logger.info(f"Fetched {len(top_news)} news articles")
+        logging.info(f"Fetched {len(top_news)} news articles")
     
         # Format output
         output = format_output(economic_calendar, pd.DataFrame(), top_stocks, top_news)
     
-        logger.info(f"Generated summary: {output}")
+        logging.info(f"Generated summary: {output}")
         return output
     
     except Exception as e:
-        logger.error(f"Error generating market summary: {str(e)}")
-        logger.error(traceback.format_exc())
+        logging.error(f"Error generating market summary: {str(e)}")
+        logging.error(traceback.format_exc())
         return f"Sorry, I couldn't generate a market summary at this time. Error: {str(e)}"
 
 def format_output(economic_calendar, earnings_calendar, top_stocks, top_news):

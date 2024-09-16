@@ -1,21 +1,5 @@
 [
     {
-      "name": "Bank Holiday",
-      "date": "2024-09-02",
-      "time": "08:00 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Non-Economic"
-    },
-    {
-      "name": "Final Manufacturing PMI",
-      "date": "2024-09-03",
-      "time": "09:45 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
       "name": "ISM Manufacturing PMI",
       "date": "2024-09-03",
       "time": "10:00 AM",
@@ -32,68 +16,12 @@
       "impactTitle": "Medium Impact Expected"
     },
     {
-      "name": "Construction Spending m\\/m",
-      "date": "2024-09-03",
-      "time": "10:00 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
-      "name": "RCM\\/TIPP Economic Optimism",
-      "date": "2024-09-03",
-      "time": "10:07 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
-      "name": "Trade Balance",
-      "date": "2024-09-04",
-      "time": "08:30 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
       "name": "JOLTS Job Openings",
       "date": "2024-09-04",
       "time": "10:00 AM",
       "country": "US",
       "currency": "USD",
       "impactTitle": "High Impact Expected"
-    },
-    {
-      "name": "Factory Orders m\\/m",
-      "date": "2024-09-04",
-      "time": "10:00 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
-      "name": "Wards Total Vehicle Sales",
-      "date": "2024-09-04",
-      "time": "10:15 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
-      "name": "Beige Book",
-      "date": "2024-09-04",
-      "time": "02:00 PM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
-      "name": "Challenger Job Cuts y\\/y",
-      "date": "2024-09-05",
-      "time": "07:30 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
     },
     {
       "name": "ADP Non-Farm Employment Change",
@@ -112,22 +40,6 @@
       "impactTitle": "High Impact Expected"
     },
     {
-      "name": "Revised Nonfarm Productivity q\\/q",
-      "date": "2024-09-05",
-      "time": "08:30 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
-      "name": "Revised Unit Labor Costs q\\/q",
-      "date": "2024-09-05",
-      "time": "08:30 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
       "name": "Final Services PMI",
       "date": "2024-09-05",
       "time": "09:45 AM",
@@ -142,14 +54,6 @@
       "country": "US",
       "currency": "USD",
       "impactTitle": "High Impact Expected"
-    },
-    {
-      "name": "Natural Gas Storage",
-      "date": "2024-09-05",
-      "time": "10:30 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
     },
     {
       "name": "Crude Oil Inventories",
@@ -200,46 +104,6 @@
       "impactTitle": "High Impact Expected"
     },
     {
-      "name": "Final Wholesale Inventories m\\/m",
-      "date": "2024-09-09",
-      "time": "10:00 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
-      "name": "Consumer Credit m\\/m",
-      "date": "2024-09-09",
-      "time": "03:00 PM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
-      "name": "NFIB Small Business Index",
-      "date": "2024-09-10",
-      "time": "05:59 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
-      "name": "FOMC Member Barr Speaks",
-      "date": "2024-09-10",
-      "time": "10:00 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
-      "name": "FOMC Member Bowman Speaks",
-      "date": "2024-09-10",
-      "time": "12:15 PM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
       "name": "Core CPI m\\/m",
       "date": "2024-09-11",
       "time": "08:30 AM",
@@ -272,22 +136,6 @@
       "impactTitle": "Medium Impact Expected"
     },
     {
-      "name": "10-y Bond Auction",
-      "date": "2024-09-11",
-      "time": "01:01 PM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
-      "name": "Federal Budget Balance",
-      "date": "2024-09-12",
-      "time": "08:00 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
       "name": "Core PPI m\\/m",
       "date": "2024-09-12",
       "time": "08:30 AM",
@@ -312,28 +160,12 @@
       "impactTitle": "High Impact Expected"
     },
     {
-      "name": "Natural Gas Storage",
-      "date": "2024-09-12",
-      "time": "10:30 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
       "name": "30-y Bond Auction",
       "date": "2024-09-12",
       "time": "01:01 PM",
       "country": "US",
       "currency": "USD",
       "impactTitle": "Medium Impact Expected"
-    },
-    {
-      "name": "Import Prices m\\/m",
-      "date": "2024-09-13",
-      "time": "08:30 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
     },
     {
       "name": "Prelim UoM Consumer Sentiment",
@@ -376,60 +208,12 @@
       "impactTitle": "High Impact Expected"
     },
     {
-      "name": "Capacity Utilization Rate",
-      "date": "2024-09-17",
-      "time": "09:15 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
-      "name": "Industrial Production m\\/m",
-      "date": "2024-09-17",
-      "time": "09:15 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
-      "name": "Business Inventories m\\/m",
-      "date": "2024-09-17",
-      "time": "10:00 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
-      "name": "FOMC Member Logan Speaks",
-      "date": "2024-09-17",
-      "time": "10:00 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
-      "name": "NAHB Housing Market Index",
-      "date": "2024-09-17",
-      "time": "10:00 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
       "name": "Building Permits",
       "date": "2024-09-18",
       "time": "08:30 AM",
       "country": "US",
       "currency": "USD",
       "impactTitle": "Medium Impact Expected"
-    },
-    {
-      "name": "Housing Starts",
-      "date": "2024-09-18",
-      "time": "08:30 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
     },
     {
       "name": "Crude Oil Inventories",
@@ -472,14 +256,6 @@
       "impactTitle": "High Impact Expected"
     },
     {
-      "name": "TIC Long-Term Purchases",
-      "date": "2024-09-18",
-      "time": "04:00 PM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
       "name": "Unemployment Claims",
       "date": "2024-09-19",
       "time": "08:30 AM",
@@ -496,36 +272,12 @@
       "impactTitle": "Medium Impact Expected"
     },
     {
-      "name": "Current Account",
-      "date": "2024-09-19",
-      "time": "08:30 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
       "name": "Existing Home Sales",
       "date": "2024-09-19",
       "time": "10:00 AM",
       "country": "US",
       "currency": "USD",
       "impactTitle": "Medium Impact Expected"
-    },
-    {
-      "name": "CB Leading Index m\\/m",
-      "date": "2024-09-19",
-      "time": "10:00 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
-      "name": "Natural Gas Storage",
-      "date": "2024-09-19",
-      "time": "10:30 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
     },
     {
       "name": "FOMC Member Harker Speaks",
@@ -558,14 +310,6 @@
       "country": "US",
       "currency": "USD",
       "impactTitle": "Medium Impact Expected"
-    },
-    {
-      "name": "HPI m\\/m",
-      "date": "2024-09-24",
-      "time": "09:00 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
     },
     {
       "name": "CB Consumer Confidence",
@@ -648,14 +392,6 @@
       "impactTitle": "Medium Impact Expected"
     },
     {
-      "name": "Natural Gas Storage",
-      "date": "2024-09-26",
-      "time": "10:30 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
       "name": "Core PCE Price Index m\\/m",
       "date": "2024-09-27",
       "time": "08:30 AM",
@@ -664,52 +400,12 @@
       "impactTitle": "High Impact Expected"
     },
     {
-      "name": "Goods Trade Balance",
-      "date": "2024-09-27",
-      "time": "08:30 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
-      "name": "Personal Income m\\/m",
-      "date": "2024-09-27",
-      "time": "08:30 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
-      "name": "Personal Spending m\\/m",
-      "date": "2024-09-27",
-      "time": "08:30 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
-      "name": "Prelim Wholesale Inventories m\\/m",
-      "date": "2024-09-27",
-      "time": "08:30 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
-    },
-    {
       "name": "Revised UoM Consumer Sentiment",
       "date": "2024-09-27",
       "time": "10:00 AM",
       "country": "US",
       "currency": "USD",
       "impactTitle": "Medium Impact Expected"
-    },
-    {
-      "name": "Revised UoM Inflation Expectations",
-      "date": "2024-09-27",
-      "time": "10:00 AM",
-      "country": "US",
-      "currency": "USD",
-      "impactTitle": "Low Impact Expected"
     },
     {
       "name": "Chicago PMI",

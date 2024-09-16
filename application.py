@@ -200,7 +200,7 @@ def webhook():
         if text == '!market':
             market_summary = asyncio.run(generate_market_summary())
             if market_summary:
-                asyncio.run(send_message(market_summary))
+                asyncio.run(send_message(BOT_ID, market_summary))
                 return jsonify(success=True, message="Market summary sent to GroupMe"), 200
             else:
                 return jsonify(success=False, message="Failed to generate market summary"), 500
@@ -384,9 +384,40 @@ def get_stock_data(symbol, data):
 
 async def fetch_stock_data(session, symbol):
     try:
-        async with session.get(f"https://query1.finance.yahoo.com/v7/finance/quote?symbols={symbol}") as response:
+        url = f"https://query1.finance.yahoo.com/v7/finance/quote?symbols={symbol}"
+        async with session.get(url) as response:
+            if response.status != 200:
+                logging.error(f"Error fetching data for {symbol}: HTTP status {response.status}")
+                return None
+            
+            content_type = response.headers.get('Content-Type', '')
+            if 'application/json' not in content_type:
+                logging.error(f"Unexpected content type for {symbol}: {content_type}")
+                return None
+            
             data = await response.json()
-            return get_stock_data(symbol, data['quoteResponse']['result'][0])
+            result = data['quoteResponse']['result']
+            if not result:
+                logging.warning(f"No data returned for {symbol}")
+                return None
+            
+            stock_data = result[0]
+            current_price = stock_data.get('regularMarketPrice')
+            previous_close = stock_data.get('regularMarketPreviousClose')
+            
+            if current_price is None or previous_close is None:
+                logging.warning(f"Missing price data for {symbol}. Current: {current_price}, Previous: {previous_close}")
+                return None
+            
+            percent_change = ((current_price - previous_close) / previous_close) * 100
+            volume = stock_data.get('regularMarketVolume', 0)
+            
+            logging.info(f"Successfully fetched data for {symbol}")
+            return {
+                'Symbol': symbol,
+                'Percent Change': percent_change,
+                'Volume': volume
+            }
     except Exception as e:
         logging.error(f"Error fetching data for {symbol}: {str(e)}")
         return None
@@ -404,7 +435,7 @@ async def get_top_stocks(symbols, batch_size=50):
             for result in results:
                 if result:
                     all_results.append(result)
-                else:
+                elif result is not None:
                     failed_symbols.append(result['Symbol'])
             
             await asyncio.sleep(1)  # Add a short delay between batches
@@ -461,7 +492,7 @@ def get_event_emoji(event_name):
 def get_economic_calendar(start_date, end_date):
     try:
         # Load the JSON data
-        with open('usd_us_events_high_medium.json', 'r') as file:
+        with open('usd_us_events.json', 'r') as file:
             events = json.load(file)
         
         # Convert start_date and end_date to datetime objects
@@ -489,7 +520,7 @@ def get_economic_calendar(start_date, end_date):
         
         return df
     except Exception as e:
-        print(f"Error processing economic calendar data: {e}")
+        logger.error(f"Error processing economic calendar data: {e}")
         return pd.DataFrame()
 
 async def generate_market_summary():
@@ -501,21 +532,22 @@ async def generate_market_summary():
 
         # Fetch all S&P 500 symbols
         all_symbols = get_sp500_symbols()
-        print(f"Fetched {len(all_symbols)} S&P 500 symbols")
+        logger.info(f"Fetched {len(all_symbols)} S&P 500 symbols")
 
         # Fetch economic calendar
         economic_calendar = get_economic_calendar(start_date, end_date)
 
         # Fetch top stocks (limit to 100 symbols for faster processing)
         top_stocks, failed_symbols = await get_top_stocks(all_symbols[:100])
-        print(f"Fetched top stocks. DataFrame empty: {top_stocks.empty}")
+        logger.info(f"Fetched top stocks. DataFrame empty: {top_stocks.empty}")
         
         if top_stocks.empty:
+            logger.warning("Unable to fetch stock data.")
             return "Unable to fetch stock data at this time."
 
         # Fetch top news
         top_news = get_top_news()
-        print(f"Fetched {len(top_news)} news articles")
+        logger.info(f"Fetched {len(top_news)} news articles")
 
         # Format output
         output = "Daily Market Summary:\n\n"
@@ -567,7 +599,7 @@ async def generate_market_summary():
         else:
             output += "No news stories available.\n"
 
-        print(f"Generated summary: {output}")  # Add this line to print the summary
+        logger.info(f"Generated summary: {output}")
         return output
 
     except Exception as e:

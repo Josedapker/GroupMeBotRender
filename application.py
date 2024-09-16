@@ -9,8 +9,8 @@ from io import BytesIO
 from dotenv import load_dotenv
 import os
 import httpx
-from quart import Quart, request, jsonify
-from quart_cors import cors
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 from typing import List, Dict, Union
 import logging
 import traceback
@@ -85,8 +85,8 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 from tavily import TavilyClient
 tavily_client = TavilyClient(TAVILY_API_KEY)
 
-application = Quart(__name__)
-application = cors(application)
+application = Flask(__name__)
+CORS(application)
 
 @application.route('/', methods=['GET', 'HEAD'])
 def root():
@@ -185,9 +185,9 @@ For any issues or feature requests, please contact the bot administrator.
     f"{RATE_LIMIT_PER_MINUTE} per minute; {RATE_LIMIT_PER_HOUR} per hour; {RATE_LIMIT_PER_DAY} per day",
     key_func=get_rate_limit_key
 )
-async def webhook():
+def webhook():
     try:
-        data = await request.get_json(force=True)
+        data = request.get_json(force=True)
         logger.info(f"Received message: {json.dumps(data)}")
         
         # Ignore messages sent by bots (including itself)
@@ -198,9 +198,9 @@ async def webhook():
         text = data.get('text', '').lower().strip()
         
         if text == '!market':
-            market_summary = await generate_market_summary()
+            market_summary = asyncio.run(generate_market_summary())
             if market_summary:
-                await send_message(market_summary)
+                asyncio.run(send_message(market_summary))
                 return jsonify(success=True, message="Market summary sent to GroupMe"), 200
             else:
                 return jsonify(success=False, message="Failed to generate market summary"), 500

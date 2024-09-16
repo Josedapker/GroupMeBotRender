@@ -1,1 +1,1 @@
-web: hypercorn wsgi:application
+web: gunicorn wsgi:application

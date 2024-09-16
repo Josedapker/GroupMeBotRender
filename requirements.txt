@@ -16,3 +16,5 @@ pandas
 tabulate
 aiohttp==3.8.5
 hypercorn==0.14.3
+quart
+quart-cors

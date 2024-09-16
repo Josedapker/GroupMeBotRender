@@ -370,14 +370,14 @@ def get_stock_data(symbol, retries=3, delay=2):
     for attempt in range(retries):
         try:
             ticker = yf.Ticker(symbol)
-            info = ticker.fast_info
+            info = ticker.info
             if not info:
-                logging.warning(f"No fast_info returned for {symbol}")
+                logging.warning(f"No info returned for {symbol}")
                 return None
-            
-            current_price = info.get('last_price')
-            previous_close = info.get('previous_close')
-            volume = info.get('last_volume') or info.get('volume')
+
+            current_price = info.get('regularMarketPrice')
+            previous_close = info.get('regularMarketPreviousClose')
+            volume = info.get('volume')
 
             if current_price is None or previous_close is None:
                 logging.warning(f"Missing price data for {symbol}. Current: {current_price}, Previous: {previous_close}")

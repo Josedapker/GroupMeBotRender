@@ -168,82 +168,9 @@ async def upload_image_to_groupme(image_url: str) -> Union[str, None]:
         return None
 
 async def send_message(bot_id, text):
-    url = 'https://api.groupme.com/v3/bots/post'
-    data = {
-        'bot_id': bot_id,
-        'text': text
-    }
-    async with httpx.AsyncClient() as client:
-        response = await client.post(url, json=data)
-    response.raise_for_status()
-    return response
-
-async def send_message(bot_id: str, text: str, image_url: Union[str, None] = None) -> None:
-    url = "https://api.groupme.com/v3/bots/post"
-    
-    attachment = []
-    if image_url:
-        print(f"Attempting to upload image: {image_url}")
-        groupme_image_url = await upload_image_to_groupme(image_url)
-        if groupme_image_url:
-            print(f"Image uploaded successfully to GroupMe: {groupme_image_url}")
-            attachment = [{"type": "image", "url": groupme_image_url}]
-        else:
-            print("Failed to upload image, sending message without image.")
-
-    message_parts = split_message(text)
-    
-    async with httpx.AsyncClient() as client:
-        for i, part in enumerate(message_parts):
-            escaped_part = html.escape(part)  # Escape special characters
-            data = {
-                "bot_id": bot_id,
-                "text": escaped_part,
-            }
-            if i == 0 and attachment:
-                data["attachments"] = attachment
-
-            retry_count = 0
-            max_retries = 3
-            while retry_count < max_retries:
-                try:
-                    response = await client.post(url, json=data)
-                    response.raise_for_status()
-                    print(f"Message part {i+1} sent successfully!")
-                    break  # Exit the retry loop if successful
-                except httpx.RequestError as e:
-                    print(f"Error sending message part {i+1}: {str(e)}")
-                    logger.error(f"Full error details: {e.request.url}, {e.request.headers}, {e.request.content}")
-                    if response:
-                        logger.error(f"Response content: {response.content}")
-                    retry_count += 1
-                    if retry_count < max_retries:
-                        await asyncio.sleep(1)  # Wait before retrying
-                except Exception as e:
-                    logger.error(f"Unexpected error in send_message: {str(e)}")
-                    logger.error(traceback.format_exc())
-                    break  # Exit the retry loop for unexpected errors
-            
-            # Wait between message parts, with a longer delay after the first part
-            if i == 0:
-                await asyncio.sleep(2)  # Longer delay after the first part
-            elif i < len(message_parts) - 1:
-                await asyncio.sleep(1)  # Shorter delay between subsequent parts
-
-def get_help_message() -> str:
-    help_message = """
-🤖 AI Bot Commands 🤖
-
-• !help - Show this help message
-• !usage - Get OpenAI API usage summary
-• !ai [prompt] - Generate a response using GPT-3.5 (default AI model)
-• !ai4 [prompt] - Generate a response using GPT-4 with web search
-• !image [prompt] - Generate an image using DALL-E
-• !market - Get a daily market summary
-
-For any issues or feature requests, please contact the bot administrator.
-"""
-    return help_message
+    # For local testing, log the message instead of sending to GroupMe
+    logger.info(f"Message that would be sent to GroupMe:\n{text}")
+    return {"status": "success", "message": "Logged locally"}
 
 @application.route('/', methods=['POST'])
 @limiter.limit(
@@ -307,9 +234,9 @@ async def webhook():
             summary = await generate_market_summary()
             if summary:
                 logger.info("Market summary generated")
-                # Send the summary to GroupMe
+                # Log the summary locally
                 await send_message(BOT_ID, summary)
-                return jsonify(success=True, message="Market summary sent to GroupMe"), 200
+                return jsonify(success=True, message="Market summary logged locally"), 200
             else:
                 return jsonify(success=False, message="Failed to generate market summary"), 500
         
@@ -573,7 +500,7 @@ def get_event_emoji(event_name):
 def get_economic_calendar(start_date, end_date):
     try:
         # Load the JSON data
-        with open('/Users/jose/Desktop/ExperimentalScripts/NEW/StockSummary/usd_us_events_high_medium.json', 'r') as file:
+        with open('usd_us_events_high_medium.json', 'r') as file:
             events = json.load(file)
         
         # Convert start_date and end_date to datetime objects

@@ -573,7 +573,7 @@ def get_event_emoji(event_name):
 def get_economic_calendar(start_date, end_date):
     try:
         # Load the JSON data
-        with open('/Users/jose/Desktop/ExperimentalScripts/NEW/StockSummary/usd_us_events_high_medium.json', 'r') as file:
+        with open('usd_us_events_high_medium.json', 'r') as file:
             events = json.load(file)
         
         # Convert start_date and end_date to datetime objects

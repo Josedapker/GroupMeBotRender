@@ -34,6 +34,7 @@ import requests
 import aiohttp
 from functools import lru_cache
 import random
+import nest_asyncio
 
 # Load environment variables
 load_dotenv()
@@ -384,43 +385,79 @@ def get_stock_data(symbol, data):
         logging.error(f"Error processing stock data for {symbol}: {str(e)}")
         return None
 
-async def fetch_stock_data(session, symbol, max_retries=3, base_delay=1):
-    for attempt in range(max_retries):
+# Create a ThreadPoolExecutor at the module level
+executor = ThreadPoolExecutor(max_workers=10)
+
+def get_stock_data(symbol, retries=3, delay=2):
+    # Your existing synchronous get_stock_data implementation
+    # (Copied from your StockSummary1.1.py)
+    for attempt in range(retries):
         try:
-            async with session.get(f"https://query1.finance.yahoo.com/v7/finance/quote?symbols={symbol}") as response:
-                if response.status == 200:
-                    data = await response.json()
-                    quote = data['quoteResponse']['result'][0]
-                    return get_stock_data(symbol, quote)
+            ticker = yf.Ticker(symbol)
+            info = ticker.info
+            if not info:
+                logging.warning(f"No info returned for {symbol}")
+                return None
+            
+            current_price = info.get('currentPrice')
+            previous_close = info.get('previousClose')
+            
+            if current_price is None or previous_close is None:
+                logging.warning(f"Missing price data for {symbol}. Current: {current_price}, Previous: {previous_close}")
+                return None
+            
+            percent_change = ((current_price - previous_close) / previous_close) * 100
+            volume = info.get('volume', 0)
+            
+            logging.info(f"Successfully fetched data for {symbol}")
+            return {
+                'Symbol': symbol,
+                'Percent Change': percent_change,
+                'Volume': volume
+            }
         except Exception as e:
-            logging.error(f"Error fetching stock data for {symbol}: {str(e)}")
-            await asyncio.sleep(base_delay * 2 ** attempt)
-    return None
+            if attempt < retries - 1:
+                logging.warning(f"Attempt {attempt + 1} failed for {symbol}: {str(e)}. Retrying...")
+                time.sleep(delay)
+                continue
+            logging.error(f"Error fetching data for {symbol}: {str(e)}")
+            return None
+
+async def fetch_stock_data(symbol):
+    loop = asyncio.get_event_loop()
+    result = await loop.run_in_executor(executor, get_stock_data, symbol)
+    return result
 
 async def get_top_stocks(symbols, batch_size=50):
     all_results = []
     failed_symbols = []
     
-    async with aiohttp.ClientSession() as session:
-        for i in range(0, len(symbols), batch_size):
-            batch = symbols[i:i+batch_size]
-            tasks = [fetch_stock_data(session, symbol) for symbol in batch]
-            results = await asyncio.gather(*tasks)
-            
-            for result in results:
+    sem = asyncio.Semaphore(20)  # Limit concurrent tasks to prevent rate limiting
+    
+    async def safe_fetch(symbol):
+        async with sem:
+            try:
+                result = await fetch_stock_data(symbol)
                 if result:
                     all_results.append(result)
-                elif result is not None:
-                    failed_symbols.append(result['Symbol'])
-            
-            await asyncio.sleep(1)  # Add a short delay between batches
+                else:
+                    failed_symbols.append(symbol)
+            except Exception as e:
+                logging.error(f"Error fetching data for {symbol}: {str(e)}")
+                failed_symbols.append(symbol)
+                
+    tasks = []
+    for symbol in symbols:
+        tasks.append(asyncio.create_task(safe_fetch(symbol)))
+    
+    await asyncio.gather(*tasks)
     
     df = pd.DataFrame(all_results)
     if df.empty:
         logging.warning("No stock data could be fetched.")
         return df, failed_symbols
     df = df.sort_values(by=['Volume', 'Percent Change'], ascending=False)
-    return df.head(10), failed_symbols
+    return df, failed_symbols
 
 def get_sp500_symbols():
     sp500_url = 'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies'
@@ -504,87 +541,94 @@ async def generate_market_summary():
         today = datetime.today()
         start_date = today.strftime('%Y-%m-%d')
         end_date = (today + timedelta(days=7)).strftime('%Y-%m-%d')
-
+    
         # Fetch all S&P 500 symbols
         all_symbols = get_sp500_symbols()
         logger.info(f"Fetched {len(all_symbols)} S&P 500 symbols")
-
+    
         # Fetch economic calendar
         economic_calendar = get_economic_calendar(start_date, end_date)
-
-        # Fetch top stocks (limit to 100 symbols for faster processing)
-        top_stocks, failed_symbols = await get_top_stocks(all_symbols[:100])
+    
+        # Fetch top stocks asynchronously
+        top_stocks, failed_symbols = await get_top_stocks(all_symbols)
         logger.info(f"Fetched top stocks. DataFrame empty: {top_stocks.empty}")
         
         if top_stocks.empty:
             logger.warning("Unable to fetch stock data.")
             return "Unable to fetch stock data at this time."
-
+    
         # Fetch top news
         top_news = get_top_news()
         logger.info(f"Fetched {len(top_news)} news articles")
-
+    
         # Format output
-        output = "Daily Market Summary:\n\n"
-
-        # Economic Calendar
-        output += "Economic Calendar:\n"
-        if not economic_calendar.empty:
-            economic_calendar['Release Date'] = pd.to_datetime(economic_calendar['Release Date'])
-            events_by_day = economic_calendar.groupby('Release Date')
-            for date, group in events_by_day:
-                output += f"{date.strftime('%Y-%m-%d')}:\n"
-                for _, row in group.iterrows():
-                    impact_emoji = get_impact_emoji(row['Impact'])
-                    event_emoji = get_event_emoji(row['Release Name'])
-                    output += f"{impact_emoji} {event_emoji} {row['Release Name']} ({row['Release Time (ET)']})\n"
-                output += "\n"
-        else:
-            output += "No economic events available.\n"
-
-        # Top Stocks
-        output += "\nTop Stocks Today:\n"
-        if not top_stocks.empty:
-            # Prepare data for three tables
-            gainers = top_stocks.nlargest(10, 'Percent Change')
-            losers = top_stocks.nsmallest(10, 'Percent Change')
-            volume = top_stocks.nlargest(10, 'Volume')
-
-            # Format data for tabulate
-            gainers_data = [[row['Symbol'], f"{row['Percent Change']:.2f}%", f"{int(row['Volume']):,}"] for _, row in gainers.iterrows()]
-            losers_data = [[row['Symbol'], f"{row['Percent Change']:.2f}%", f"{int(row['Volume']):,}"] for _, row in losers.iterrows()]
-            volume_data = [[row['Symbol'], f"{row['Percent Change']:.2f}%", f"{int(row['Volume']):,}"] for _, row in volume.iterrows()]
-
-            # Create tables
-            gainers_table = tabulate(gainers_data, headers=['Top Gainers', '%', 'Volume'], tablefmt='pipe')
-            losers_table = tabulate(losers_data, headers=['Top Losers', '%', 'Volume'], tablefmt='pipe')
-            volume_table = tabulate(volume_data, headers=['Top Volume', '%', 'Shares'], tablefmt='pipe')
-
-            output += gainers_table + "\n\n"
-            output += volume_table + "\n\n"
-            output += losers_table + "\n\n"
-        else:
-            output += "No top stocks data available.\n\n"
-
-        # Top News
-        output += "Top News Stories:\n"
-        if top_news:
-            for article in top_news:
-                output += f"- {article['title']} ({article['url']})\n"
-        else:
-            output += "No news stories available.\n"
-
+        output = format_output(economic_calendar, pd.DataFrame(), top_stocks, top_news)
+    
         logger.info(f"Generated summary: {output}")
         return output
-
+    
     except Exception as e:
         logger.error(f"Error generating market summary: {str(e)}")
         logger.error(traceback.format_exc())
         return f"Sorry, I couldn't generate a market summary at this time. Error: {str(e)}"
 
+def format_output(economic_calendar, earnings_calendar, top_stocks, top_news):
+    output = ""
+    
+    # Economic Calendar
+    output += "Economic Calendar:\n"
+    if not economic_calendar.empty:
+        economic_calendar['Release Date'] = pd.to_datetime(economic_calendar['Release Date'])
+        events_by_day = economic_calendar.groupby('Release Date')
+        for date, group in events_by_day:
+            output += f"{date.strftime('%Y-%m-%d')}:\n"
+            for _, row in group.iterrows():
+                impact_emoji = get_impact_emoji(row['Impact'])
+                event_emoji = get_event_emoji(row['Release Name'])
+                output += f"{impact_emoji} {event_emoji} {row['Release Name']} ({row['Release Time (ET)']})\n"
+            output += "\n"
+    else:
+        output += "No economic events available.\n"
+    
+    # Top Stocks
+    output += "\nTop Stocks Today:\n"
+    if not top_stocks.empty:
+        # Prepare data for three tables
+        gainers = top_stocks.nlargest(10, 'Percent Change')
+        losers = top_stocks.nsmallest(10, 'Percent Change')
+        volume = top_stocks.nlargest(10, 'Volume')
+
+        # Format data for tabulate
+        gainers_data = [[row['Symbol'], f"{row['Percent Change']:.2f}%", f"{int(row['Volume']):,}"] for _, row in gainers.iterrows()]
+        losers_data = [[row['Symbol'], f"{row['Percent Change']:.2f}%", f"{int(row['Volume']):,}"] for _, row in losers.iterrows()]
+        volume_data = [[row['Symbol'], f"{row['Percent Change']:.2f}%", f"{int(row['Volume']):,}"] for _, row in volume.iterrows()]
+
+        # Create tables
+        gainers_table = tabulate(gainers_data, headers=['Top Gainers', '%', 'Volume'], tablefmt='pipe')
+        losers_table = tabulate(losers_data, headers=['Top Losers', '%', 'Volume'], tablefmt='pipe')
+        volume_table = tabulate(volume_data, headers=['Top Volume', '%', 'Shares'], tablefmt='pipe')
+
+        output += gainers_table + "\n\n"
+        output += volume_table + "\n\n"
+        output += losers_table + "\n\n"
+    else:
+        output += "No top stocks data available.\n\n"
+    
+    # Top News
+    output += "Top News Stories:\n"
+    if top_news:
+        for article in top_news:
+            output += f"- {article['title']} ({article['url']})\n"
+    else:
+        output += "No news stories available.\n"
+    
+    return output
+
 if not BOT_ID:
     logger.error("BOT_ID is not set or empty. Please check your environment variables.")
     sys.exit(1)
+
+nest_asyncio.apply()
 
 if __name__ == "__main__":
     application.run(debug=True)

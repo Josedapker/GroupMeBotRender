@@ -477,8 +477,7 @@ def get_economic_calendar(start_date, end_date):
         # Filter events within the date range
         filtered_events = [
             event for event in events
-            if start_date <= datetime.strptime(event['date'], '%Y-%m-%d') <=
-                        (event['date'], '%Y-%m-%d') <= end_date
+            if start_date <= datetime.strptime(event['date'], '%Y-%m-%d') <= end_date
         ]
         
         # Convert to DataFrame

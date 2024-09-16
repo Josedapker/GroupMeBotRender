@@ -29,6 +29,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
 from tabulate import tabulate
 import requests
+import aiohttp
+from functools import lru_cache
 
 # Load environment variables
 load_dotenv()
@@ -396,61 +398,55 @@ def handle_rate_limit_exceeded(e):
     logger.warning(f"Rate limit exceeded: {str(e)}")
     return "Rate limit exceeded. Please try again later.", 429
 
-def get_stock_data(symbol, retries=3, delay=2):
-    for attempt in range(retries):
-        try:
-            ticker = yf.Ticker(symbol)
-            info = ticker.info
-            if not info:
-                logging.warning(f"No info returned for {symbol}")
-                return None
-            
-            current_price = info.get('currentPrice')
-            previous_close = info.get('previousClose')
-            
-            if current_price is None or previous_close is None:
-                logging.warning(f"Missing price data for {symbol}. Current: {current_price}, Previous: {previous_close}")
-                return None
-            
-            percent_change = ((current_price - previous_close) / previous_close) * 100
-            volume = info.get('volume', 0)
-            
-            logging.info(f"Successfully fetched data for {symbol}")
-            return {
-                'Symbol': symbol,
-                'Percent Change': percent_change,
-                'Volume': volume
-            }
-        except Exception as e:
-            if attempt < retries - 1:
-                logging.warning(f"Attempt {attempt + 1} failed for {symbol}: {str(e)}. Retrying...")
-                time.sleep(delay)
-                continue
-            logging.error(f"Error fetching data for {symbol}: {str(e)}")
+@lru_cache(maxsize=100)
+def get_stock_data(symbol, data):
+    try:
+        current_price = data.get('currentPrice')
+        previous_close = data.get('previousClose')
+        
+        if current_price is None or previous_close is None:
+            logging.warning(f"Missing price data for {symbol}. Current: {current_price}, Previous: {previous_close}")
             return None
+        
+        percent_change = ((current_price - previous_close) / previous_close) * 100
+        volume = data.get('volume', 0)
+        
+        logging.info(f"Successfully fetched data for {symbol}")
+        return {
+            'Symbol': symbol,
+            'Percent Change': percent_change,
+            'Volume': volume
+        }
+    except Exception as e:
+        logging.error(f"Error processing stock data for {symbol}: {str(e)}")
+        return None
 
-def get_top_stocks(symbols, batch_size=50, max_workers=10):
+async def fetch_stock_data(session, symbol):
+    try:
+        async with session.get(f"https://query1.finance.yahoo.com/v7/finance/quote?symbols={symbol}") as response:
+            data = await response.json()
+            return get_stock_data(symbol, data['quoteResponse']['result'][0])
+    except Exception as e:
+        logging.error(f"Error fetching data for {symbol}: {str(e)}")
+        return None
+
+async def get_top_stocks(symbols, batch_size=50):
     all_results = []
     failed_symbols = []
     
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+    async with aiohttp.ClientSession() as session:
         for i in range(0, len(symbols), batch_size):
             batch = symbols[i:i+batch_size]
-            futures = {executor.submit(get_stock_data, symbol): symbol for symbol in batch}
+            tasks = [fetch_stock_data(session, symbol) for symbol in batch]
+            results = await asyncio.gather(*tasks)
             
-            for future in as_completed(futures):
-                symbol = futures[future]
-                try:
-                    result = future.result()
-                    if result:
-                        all_results.append(result)
-                    else:
-                        failed_symbols.append(symbol)
-                except Exception as e:
-                    logging.error(f"Unexpected error for {symbol}: {str(e)}")
-                    failed_symbols.append(symbol)
+            for result in results:
+                if result:
+                    all_results.append(result)
+                else:
+                    failed_symbols.append(result['Symbol'])
             
-            time.sleep(1)  # Add a short delay between batches
+            await asyncio.sleep(1)  # Add a short delay between batches
     
     df = pd.DataFrame(all_results)
     if df.empty:
@@ -549,13 +545,12 @@ async def generate_market_summary():
         # Fetch economic calendar
         economic_calendar = get_economic_calendar(start_date, end_date)
 
-        # Fetch top stocks
-        top_stocks, failed_symbols = get_top_stocks(all_symbols)
+        # Fetch top stocks (limit to 100 symbols for faster processing)
+        top_stocks, failed_symbols = await get_top_stocks(all_symbols[:100])
         print(f"Fetched top stocks. DataFrame empty: {top_stocks.empty}")
         
         if top_stocks.empty:
-            logging.warning("Unable to fetch top stocks data.")
-            return "Unable to generate market summary: No stock data available."
+            return "Unable to fetch stock data at this time."
 
         # Fetch top news
         top_news = get_top_news()
@@ -615,7 +610,8 @@ async def generate_market_summary():
         return output
 
     except Exception as e:
-        logging.error(f"Error generating market summary: {str(e)}")
+        logger.error(f"Error generating market summary: {str(e)}")
+        logger.error(traceback.format_exc())
         return f"Sorry, I couldn't generate a market summary at this time. Error: {str(e)}"
 
 if not BOT_ID:

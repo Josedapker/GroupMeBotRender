@@ -370,17 +370,21 @@ def get_stock_data(symbol, retries=3, delay=2):
     for attempt in range(retries):
         try:
             ticker = yf.Ticker(symbol)
-            # Fetch minimal data
-            data = ticker.history(period='2d', interval='1d')
-            if data.empty or len(data) < 2:
-                logging.warning(f"Not enough data returned for {symbol}")
+            info = ticker.fast_info
+            if not info:
+                logging.warning(f"No fast_info returned for {symbol}")
                 return None
             
-            current_price = data['Close'].iloc[-1]
-            previous_close = data['Close'].iloc[-2]
+            current_price = info.get('last_price')
+            previous_close = info.get('previous_close')
+            volume = info.get('last_volume') or info.get('volume')
+
+            if current_price is None or previous_close is None:
+                logging.warning(f"Missing price data for {symbol}. Current: {current_price}, Previous: {previous_close}")
+                return None
+
             percent_change = ((current_price - previous_close) / previous_close) * 100 if previous_close != 0 else 0
-            volume = data['Volume'].iloc[-1]
-            
+
             logging.info(f"Successfully fetched data for {symbol}")
             return {
                 'Symbol': symbol,
@@ -399,31 +403,30 @@ async def fetch_stock_data(symbol):
     loop = asyncio.get_event_loop()
     result = await loop.run_in_executor(executor, get_stock_data, symbol)
     return result
+    # Make sure no lingering resources or sessions remain
 
-async def get_top_stocks(symbols, batch_size=50):
+async def get_top_stocks(symbols, batch_size=20):
     all_results = []
     failed_symbols = []
-    
+
     for i in range(0, len(symbols), batch_size):
         batch = symbols[i:i+batch_size]
-        sem = asyncio.Semaphore(5)
-        
+        sem = asyncio.Semaphore(5)  # Adjust based on testing
+
         async def safe_fetch(symbol):
             async with sem:
                 try:
                     result = await fetch_stock_data(symbol)
                     if result:
                         all_results.append(result)
-                    else:
-                        failed_symbols.append(symbol)
                 except Exception as e:
                     logging.error(f"Error fetching data for {symbol}: {str(e)}")
                     failed_symbols.append(symbol)
-        
+
         tasks = [asyncio.create_task(safe_fetch(symbol)) for symbol in batch]
         await asyncio.gather(*tasks)
-        await asyncio.sleep(1)  # Short delay between batches
-    
+        await asyncio.sleep(0.5)  # Short delay between batches
+
     df = pd.DataFrame(all_results)
     if df.empty:
         logging.warning("No stock data could be fetched.")
@@ -508,7 +511,7 @@ def get_economic_calendar(start_date, end_date):
         return pd.DataFrame()
 
 def log_memory_usage():
-    process = psutil.Process()
+    process = psutil.Process(os.getpid())
     mem = process.memory_info().rss / (1024 ** 2)  # Memory usage in MB
     logging.info(f"Current memory usage: {mem:.2f} MB")
 

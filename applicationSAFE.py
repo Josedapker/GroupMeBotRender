@@ -22,13 +22,6 @@ from hypercorn.asyncio import serve
 from hypercorn.config import Config
 import html
 import re
-import yfinance as yf
-import pandas as pd
-from datetime import datetime, timedelta
-from concurrent.futures import ThreadPoolExecutor, as_completed
-import time
-from tabulate import tabulate
-import requests
 
 # Load environment variables
 load_dotenv()
@@ -65,13 +58,11 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 print(f"Loaded API key: {OPENAI_API_KEY[:5]}...{OPENAI_API_KEY[-5:]}")
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 GROUPME_ACCESS_TOKEN = os.getenv("GROUPME_ACCESS_TOKEN")
-NEWS_API_KEY = os.getenv("NEWS_API_KEY")
 
 print(f"BOT_ID loaded: {BOT_ID is not None}")
 print(f"OPENAI_API_KEY loaded: {OPENAI_API_KEY is not None}")
 print(f"TAVILY_API_KEY loaded: {TAVILY_API_KEY is not None}")
 print(f"GROUPME_ACCESS_TOKEN loaded: {GROUPME_ACCESS_TOKEN is not None}")
-print(f"NEWS_API_KEY loaded: {NEWS_API_KEY is not None}")
 
 # Remove any logging of the actual API key
 print("OpenAI API Key loaded successfully.")
@@ -167,17 +158,6 @@ async def upload_image_to_groupme(image_url: str) -> Union[str, None]:
         print(f"An unexpected error occurred: {str(e)}")
         return None
 
-async def send_message(bot_id, text):
-    url = 'https://api.groupme.com/v3/bots/post'
-    data = {
-        'bot_id': bot_id,
-        'text': text
-    }
-    async with httpx.AsyncClient() as client:
-        response = await client.post(url, json=data)
-    response.raise_for_status()
-    return response
-
 async def send_message(bot_id: str, text: str, image_url: Union[str, None] = None) -> None:
     url = "https://api.groupme.com/v3/bots/post"
     
@@ -239,7 +219,6 @@ def get_help_message() -> str:
 • !ai [prompt] - Generate a response using GPT-3.5 (default AI model)
 • !ai4 [prompt] - Generate a response using GPT-4 with web search
 • !image [prompt] - Generate an image using DALL-E
-• !market - Get a daily market summary
 
 For any issues or feature requests, please contact the bot administrator.
 """
@@ -302,16 +281,6 @@ async def webhook():
             else:
                 logger.warning("Invalid prompt for image generation")
                 await send_message(BOT_ID, "Please provide a valid prompt for image generation.")
-        elif message.lower().startswith('!market'):
-            logger.info("Generating market summary")
-            summary = await generate_market_summary()
-            if summary:
-                logger.info("Market summary generated")
-                # Send the summary to GroupMe
-                await send_message(BOT_ID, summary)
-                return jsonify(success=True, message="Market summary sent to GroupMe"), 200
-            else:
-                return jsonify(success=False, message="Failed to generate market summary"), 500
         
         return jsonify(success=True), 200
 
@@ -464,228 +433,6 @@ async def generate_ai_response(prompt: str, model: str = "gpt-3.5-turbo", use_we
 def handle_rate_limit_exceeded(e):
     logger.warning(f"Rate limit exceeded: {str(e)}")
     return "Rate limit exceeded. Please try again later.", 429
-
-def get_stock_data(symbol, retries=3, delay=2):
-    for attempt in range(retries):
-        try:
-            ticker = yf.Ticker(symbol)
-            info = ticker.info
-            if not info:
-                logging.warning(f"No info returned for {symbol}")
-                return None
-            
-            current_price = info.get('currentPrice')
-            previous_close = info.get('previousClose')
-            
-            if current_price is None or previous_close is None:
-                logging.warning(f"Missing price data for {symbol}. Current: {current_price}, Previous: {previous_close}")
-                return None
-            
-            percent_change = ((current_price - previous_close) / previous_close) * 100
-            volume = info.get('volume', 0)
-            
-            logging.info(f"Successfully fetched data for {symbol}")
-            return {
-                'Symbol': symbol,
-                'Percent Change': percent_change,
-                'Volume': volume
-            }
-        except Exception as e:
-            if attempt < retries - 1:
-                logging.warning(f"Attempt {attempt + 1} failed for {symbol}: {str(e)}. Retrying...")
-                time.sleep(delay)
-                continue
-            logging.error(f"Error fetching data for {symbol}: {str(e)}")
-            return None
-
-def get_top_stocks(symbols, batch_size=50, max_workers=10):
-    all_results = []
-    failed_symbols = []
-    
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        for i in range(0, len(symbols), batch_size):
-            batch = symbols[i:i+batch_size]
-            futures = {executor.submit(get_stock_data, symbol): symbol for symbol in batch}
-            
-            for future in as_completed(futures):
-                symbol = futures[future]
-                try:
-                    result = future.result()
-                    if result:
-                        all_results.append(result)
-                    else:
-                        failed_symbols.append(symbol)
-                except Exception as e:
-                    logging.error(f"Unexpected error for {symbol}: {str(e)}")
-                    failed_symbols.append(symbol)
-            
-            time.sleep(1)  # Add a short delay between batches
-    
-    df = pd.DataFrame(all_results)
-    if df.empty:
-        logging.warning("No stock data could be fetched.")
-        return df, failed_symbols
-    df = df.sort_values(by=['Volume', 'Percent Change'], ascending=False)
-    return df.head(10), failed_symbols
-
-def get_sp500_symbols():
-    sp500_url = 'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies'
-    table = pd.read_html(sp500_url)
-    sp500_symbols = table[0]['Symbol'].tolist()
-    return [symbol.replace('.', '-') for symbol in sp500_symbols]
-
-def get_top_news():
-    url = f"https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey={NEWS_API_KEY}"
-    response = requests.get(url)
-    if response.status_code != 200:
-        print(f"Error fetching news: {response.status_code}")
-        return []
-    try:
-        articles = response.json().get('articles', [])
-    except ValueError as e:
-        print("Error parsing JSON response from NewsAPI:", e)
-        return []
-    top_articles = [{'title': article['title'], 'url': article['url']} for article in articles[:5]]
-    return top_articles
-
-def get_impact_emoji(impact):
-    impact = impact.lower()
-    if 'high' in impact:
-        return '🔴'
-    elif 'medium' in impact:
-        return '🟠'
-    else:
-        return '🟢'
-
-def get_event_emoji(event_name):
-    event_name = event_name.lower()
-    if 'gdp' in event_name:
-        return '📊'
-    elif 'unemployment' in event_name:
-        return '👥'
-    elif 'inflation' in event_name or 'cpi' in event_name:
-        return '💹'
-    elif 'interest rate' in event_name:
-        return '🏦'
-    else:
-        return '📅'
-
-def get_economic_calendar(start_date, end_date):
-    try:
-        # Load the JSON data
-        with open('/Users/jose/Desktop/ExperimentalScripts/NEW/StockSummary/usd_us_events_high_medium.json', 'r') as file:
-            events = json.load(file)
-        
-        # Convert start_date and end_date to datetime objects
-        start_date = datetime.strptime(start_date, '%Y-%m-%d')
-        end_date = datetime.strptime(end_date, '%Y-%m-%d')
-        
-        # Filter events within the date range
-        filtered_events = [
-            event for event in events
-            if start_date <= datetime.strptime(event['date'], '%Y-%m-%d') <= end_date
-        ]
-        
-        # Convert to DataFrame
-        df = pd.DataFrame(filtered_events)
-        df['Release Date'] = pd.to_datetime(df['date'])
-        df['Release Time (ET)'] = df['time']
-        df['Release Name'] = df['name']
-        df['Impact'] = df['impactTitle']
-        
-        # Select and reorder columns
-        df = df[['Release Date', 'Release Time (ET)', 'Release Name', 'Impact']]
-        
-        # Sort by date and time
-        df = df.sort_values(['Release Date', 'Release Time (ET)'])
-        
-        return df
-    except Exception as e:
-        print(f"Error processing economic calendar data: {e}")
-        return pd.DataFrame()
-
-async def generate_market_summary():
-    try:
-        # Define date range for the week
-        today = datetime.today()
-        start_date = today.strftime('%Y-%m-%d')
-        end_date = (today + timedelta(days=7)).strftime('%Y-%m-%d')
-
-        # Fetch all S&P 500 symbols
-        all_symbols = get_sp500_symbols()
-        print(f"Fetched {len(all_symbols)} S&P 500 symbols")
-
-        # Fetch economic calendar
-        economic_calendar = get_economic_calendar(start_date, end_date)
-
-        # Fetch top stocks
-        top_stocks, failed_symbols = get_top_stocks(all_symbols)
-        print(f"Fetched top stocks. DataFrame empty: {top_stocks.empty}")
-        
-        if top_stocks.empty:
-            logging.warning("Unable to fetch top stocks data.")
-            return "Unable to generate market summary: No stock data available."
-
-        # Fetch top news
-        top_news = get_top_news()
-        print(f"Fetched {len(top_news)} news articles")
-
-        # Format output
-        output = "Daily Market Summary:\n\n"
-
-        # Economic Calendar
-        output += "Economic Calendar:\n"
-        if not economic_calendar.empty:
-            economic_calendar['Release Date'] = pd.to_datetime(economic_calendar['Release Date'])
-            events_by_day = economic_calendar.groupby('Release Date')
-            for date, group in events_by_day:
-                output += f"{date.strftime('%Y-%m-%d')}:\n"
-                for _, row in group.iterrows():
-                    impact_emoji = get_impact_emoji(row['Impact'])
-                    event_emoji = get_event_emoji(row['Release Name'])
-                    output += f"{impact_emoji} {event_emoji} {row['Release Name']} ({row['Release Time (ET)']})\n"
-                output += "\n"
-        else:
-            output += "No economic events available.\n"
-
-        # Top Stocks
-        output += "\nTop Stocks Today:\n"
-        if not top_stocks.empty:
-            # Prepare data for three tables
-            gainers = top_stocks.nlargest(10, 'Percent Change')
-            losers = top_stocks.nsmallest(10, 'Percent Change')
-            volume = top_stocks.nlargest(10, 'Volume')
-
-            # Format data for tabulate
-            gainers_data = [[row['Symbol'], f"{row['Percent Change']:.2f}%", f"{int(row['Volume']):,}"] for _, row in gainers.iterrows()]
-            losers_data = [[row['Symbol'], f"{row['Percent Change']:.2f}%", f"{int(row['Volume']):,}"] for _, row in losers.iterrows()]
-            volume_data = [[row['Symbol'], f"{row['Percent Change']:.2f}%", f"{int(row['Volume']):,}"] for _, row in volume.iterrows()]
-
-            # Create tables
-            gainers_table = tabulate(gainers_data, headers=['Top Gainers', '%', 'Volume'], tablefmt='pipe')
-            losers_table = tabulate(losers_data, headers=['Top Losers', '%', 'Volume'], tablefmt='pipe')
-            volume_table = tabulate(volume_data, headers=['Top Volume', '%', 'Shares'], tablefmt='pipe')
-
-            output += gainers_table + "\n\n"
-            output += volume_table + "\n\n"
-            output += losers_table + "\n\n"
-        else:
-            output += "No top stocks data available.\n\n"
-
-        # Top News
-        output += "Top News Stories:\n"
-        if top_news:
-            for article in top_news:
-                output += f"- {article['title']} ({article['url']})\n"
-        else:
-            output += "No news stories available.\n"
-
-        print(f"Generated summary: {output}")  # Add this line to print the summary
-        return output
-
-    except Exception as e:
-        logging.error(f"Error generating market summary: {str(e)}")
-        return f"Sorry, I couldn't generate a market summary at this time. Error: {str(e)}"
 
 if not BOT_ID:
     logger.error("BOT_ID is not set or empty. Please check your environment variables.")

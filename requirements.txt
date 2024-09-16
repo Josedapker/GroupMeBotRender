@@ -11,3 +11,6 @@ hypercorn
 websockets
 requests
 tavily-python
+yfinance 
+pandas 
+tabulate

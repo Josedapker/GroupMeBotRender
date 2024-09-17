@@ -255,6 +255,17 @@ def get_help_message() -> str:
 • !stocks - Get the top stocks summary
 • !news - Get the top business news
 
+Test Endpoints:
+• /test_help - Test the help message
+• /test_usage - Test the OpenAI API usage summary
+• /test_ai?prompt=[Your prompt] - Test GPT-3.5 response
+• /test_ai4?prompt=[Your prompt] - Test GPT-4 response with web search
+• /test_image?prompt=[Your prompt] - Test image generation
+• /test_market_summary - Test the full market summary
+• /test_calendar - Test the economic calendar
+• /test_stocks - Test the top stocks summary
+• /test_news - Test the top business news
+
 For any issues or feature requests, please contact the bot administrator.
 """
     return help_message
@@ -799,17 +810,6 @@ async def test_calendar():
 async def test_stocks():
     stocks = generate_top_stocks()
     return f"<pre>{stocks}</pre>", 200, {'Content-Type': 'text/html; charset=utf-8'}
-
-@application.route('/test_news', methods=['GET'])
-async def test_news():
-    news = generate_top_news()
-    return f"<pre>{news}</pre>", 200, {'Content-Type': 'text/html; charset=utf-8'}
-
-if __name__ == "__main__":
-    config = Config()
-    config.bind = ["0.0.0.0:8000"]
-    asgi_app = WsgiToAsgi(application)
-    asyncio.run(serve(asgi_app, config))
 
 
 

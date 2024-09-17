@@ -1,0 +1,790 @@
+2024-09-16 20:48:16,692 - groupme_bot - WARNING - Not enough data for symbol: META
+2024-09-16 20:48:16,692 - groupme_bot - WARNING - Not enough data for symbol: GOOG
+2024-09-16 20:48:16,703 - groupme_bot - WARNING - Not enough data for symbol: GOOGL
+2024-09-16 20:48:16,704 - groupme_bot - WARNING - Not enough data for symbol: NVDA
+2024-09-16 20:48:16,704 - groupme_bot - WARNING - Not enough data for symbol: AVGO
+2024-09-16 20:48:16,705 - groupme_bot - WARNING - Not enough data for symbol: AMZN
+2024-09-16 20:48:16,724 - groupme_bot - WARNING - Not enough data for symbol: AAPL
+2024-09-16 20:48:16,724 - groupme_bot - WARNING - Not enough data for symbol: MSFT
+2024-09-16 20:48:16,764 - groupme_bot - WARNING - Not enough data for symbol: LLY
+2024-09-16 20:48:17,813 - groupme_bot - WARNING - Not enough data for symbol: TSLA
+2024-09-16 20:48:17,820 - groupme_bot - WARNING - Not enough data for symbol: V
+2024-09-16 20:48:17,845 - groupme_bot - WARNING - Not enough data for symbol: MA
+2024-09-16 20:48:17,845 - groupme_bot - WARNING - Not enough data for symbol: UNH
+2024-09-16 20:48:17,846 - groupme_bot - WARNING - Not enough data for symbol: JPM
+2024-09-16 20:48:17,864 - groupme_bot - WARNING - Not enough data for symbol: HD
+2024-09-16 20:48:17,867 - groupme_bot - WARNING - Not enough data for symbol: WMT
+2024-09-16 20:48:17,873 - groupme_bot - WARNING - Not enough data for symbol: XOM
+2024-09-16 20:48:17,878 - groupme_bot - WARNING - Not enough data for symbol: ORCL
+2024-09-16 20:48:17,958 - groupme_bot - WARNING - Not enough data for symbol: MRK
+2024-09-16 20:48:17,959 - groupme_bot - WARNING - Not enough data for symbol: ABBV
+2024-09-16 20:48:17,960 - groupme_bot - WARNING - Not enough data for symbol: ADBE
+2024-09-16 20:48:17,973 - groupme_bot - WARNING - Not enough data for symbol: CSCO
+2024-09-16 20:48:17,973 - groupme_bot - WARNING - Not enough data for symbol: COST
+2024-09-16 20:48:17,984 - groupme_bot - WARNING - Not enough data for symbol: PEP
+2024-09-16 20:48:17,986 - groupme_bot - WARNING - Not enough data for symbol: BAC
+2024-09-16 20:48:17,997 - groupme_bot - WARNING - Not enough data for symbol: KO
+2024-09-16 20:48:18,031 - groupme_bot - WARNING - Not enough data for symbol: CVX
+2024-09-16 20:48:18,632 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-16 20:48:18,640 - groupme_bot - WARNING - Not enough data for symbol: CRM
+2024-09-16 20:48:18,652 - groupme_bot - WARNING - Not enough data for symbol: TMO
+2024-09-16 20:48:18,663 - groupme_bot - WARNING - Not enough data for symbol: ACN
+2024-09-16 20:48:18,675 - groupme_bot - WARNING - Not enough data for symbol: LIN
+2024-09-16 20:48:18,676 - groupme_bot - WARNING - Not enough data for symbol: DHR
+2024-09-16 20:48:18,696 - groupme_bot - WARNING - Not enough data for symbol: PFE
+2024-09-16 20:48:18,713 - groupme_bot - WARNING - Not enough data for symbol: MCD
+2024-09-16 20:48:18,739 - groupme_bot - WARNING - Not enough data for symbol: AMD
+2024-09-16 20:48:18,743 - groupme_bot - WARNING - Not enough data for symbol: NFLX
+2024-09-16 20:48:18,771 - groupme_bot - WARNING - Not enough data for symbol: CMCSA
+2024-09-16 20:48:18,773 - groupme_bot - WARNING - Not enough data for symbol: TMUS
+2024-09-16 20:48:18,776 - groupme_bot - WARNING - Not enough data for symbol: ABT
+2024-09-16 20:48:18,819 - groupme_bot - WARNING - Not enough data for symbol: WFC
+2024-09-16 20:48:18,830 - groupme_bot - WARNING - Not enough data for symbol: PM
+2024-09-16 20:48:18,838 - groupme_bot - WARNING - Not enough data for symbol: DIS
+2024-09-16 20:48:18,856 - groupme_bot - WARNING - Not enough data for symbol: MS
+2024-09-16 20:48:18,860 - groupme_bot - WARNING - Not enough data for symbol: UPS
+2024-09-16 20:48:18,871 - groupme_bot - WARNING - Not enough data for symbol: NKE
+2024-09-16 20:48:18,872 - groupme_bot - WARNING - Not enough data for symbol: AMGN
+2024-09-16 20:48:18,880 - groupme_bot - WARNING - Not enough data for symbol: TXN
+2024-09-16 20:48:18,884 - groupme_bot - WARNING - Not enough data for symbol: COP
+2024-09-16 20:48:18,907 - groupme_bot - WARNING - Not enough data for symbol: CAT
+2024-09-16 20:48:18,955 - groupme_bot - WARNING - Not enough data for symbol: VZ
+2024-09-16 20:48:18,964 - groupme_bot - WARNING - Not enough data for symbol: UNP
+2024-09-16 20:48:18,968 - groupme_bot - WARNING - Not enough data for symbol: INTU
+2024-09-16 20:48:18,976 - groupme_bot - WARNING - Not enough data for symbol: INTC
+2024-09-16 20:48:18,988 - groupme_bot - WARNING - Not enough data for symbol: NEE
+2024-09-16 20:48:18,999 - groupme_bot - WARNING - Not enough data for symbol: BMY
+2024-09-16 20:48:19,001 - groupme_bot - WARNING - Not enough data for symbol: BA
+2024-09-16 20:48:19,020 - groupme_bot - WARNING - Not enough data for symbol: LOW
+2024-09-16 20:48:19,059 - groupme_bot - WARNING - Not enough data for symbol: IBM
+2024-09-16 20:48:19,075 - groupme_bot - WARNING - Not enough data for symbol: RTX
+2024-09-16 20:48:19,079 - groupme_bot - WARNING - Not enough data for symbol: QCOM
+2024-09-16 20:48:19,097 - groupme_bot - WARNING - Not enough data for symbol: HON
+2024-09-16 20:48:19,098 - groupme_bot - WARNING - Not enough data for symbol: AMAT
+2024-09-16 20:48:19,117 - groupme_bot - WARNING - Not enough data for symbol: GE
+2024-09-16 20:48:19,126 - groupme_bot - WARNING - Not enough data for symbol: AXP
+2024-09-16 20:48:19,134 - groupme_bot - WARNING - Not enough data for symbol: SPGI
+2024-09-16 20:48:19,138 - groupme_bot - WARNING - Not enough data for symbol: PLD
+2024-09-16 20:48:19,158 - groupme_bot - WARNING - Not enough data for symbol: DE
+2024-09-16 20:48:19,164 - groupme_bot - WARNING - Not enough data for symbol: NOW
+2024-09-16 20:48:19,179 - groupme_bot - WARNING - Not enough data for symbol: SBUX
+2024-09-16 20:48:19,190 - groupme_bot - WARNING - Not enough data for symbol: BKNG
+2024-09-16 20:48:19,199 - groupme_bot - WARNING - Not enough data for symbol: LMT
+2024-09-16 20:48:19,214 - groupme_bot - WARNING - Not enough data for symbol: ELV
+2024-09-16 20:48:19,234 - groupme_bot - WARNING - Not enough data for symbol: MDT
+2024-09-16 20:48:19,243 - groupme_bot - WARNING - Not enough data for symbol: GS
+2024-09-16 20:48:19,243 - groupme_bot - WARNING - Not enough data for symbol: SCHW
+2024-09-16 20:48:19,262 - groupme_bot - WARNING - Not enough data for symbol: SYK
+2024-09-16 20:48:19,279 - groupme_bot - WARNING - Not enough data for symbol: ISRG
+2024-09-16 20:48:19,292 - groupme_bot - WARNING - Not enough data for symbol: ADP
+2024-09-16 20:48:19,306 - groupme_bot - WARNING - Not enough data for symbol: TJX
+2024-09-16 20:48:19,315 - groupme_bot - WARNING - Not enough data for symbol: MDLZ
+2024-09-16 20:48:19,316 - groupme_bot - WARNING - Not enough data for symbol: T
+2024-09-16 20:48:19,332 - groupme_bot - WARNING - Not enough data for symbol: VRTX
+2024-09-16 20:48:19,335 - groupme_bot - WARNING - Not enough data for symbol: GILD
+2024-09-16 20:48:19,350 - groupme_bot - WARNING - Not enough data for symbol: BLK
+2024-09-16 20:48:19,381 - groupme_bot - WARNING - Not enough data for symbol: ADI
+2024-09-16 20:48:19,412 - groupme_bot - WARNING - Not enough data for symbol: LRCX
+2024-09-16 20:48:19,419 - groupme_bot - WARNING - Not enough data for symbol: ZTS
+2024-09-16 20:48:19,433 - groupme_bot - WARNING - Not enough data for symbol: CCI
+2024-09-16 20:48:19,446 - groupme_bot - WARNING - Not enough data for symbol: CVS
+2024-09-16 20:48:19,452 - groupme_bot - WARNING - Not enough data for symbol: ETN
+2024-09-16 20:48:19,459 - groupme_bot - WARNING - Not enough data for symbol: RSG
+2024-09-16 20:48:19,501 - groupme_bot - WARNING - Not enough data for symbol: MMC
+2024-09-16 20:48:19,507 - groupme_bot - WARNING - Not enough data for symbol: CI
+2024-09-16 20:48:19,515 - groupme_bot - WARNING - Not enough data for symbol: CHTR
+2024-09-16 20:48:19,522 - groupme_bot - WARNING - Not enough data for symbol: FIS
+2024-09-16 20:48:19,535 - groupme_bot - WARNING - Not enough data for symbol: REGN
+2024-09-16 20:48:19,550 - groupme_bot - WARNING - Not enough data for symbol: SPGI
+2024-09-16 20:48:19,561 - groupme_bot - WARNING - Not enough data for symbol: EXC
+2024-09-16 20:48:19,568 - groupme_bot - WARNING - Not enough data for symbol: AON
+2024-09-16 20:48:19,570 - groupme_bot - WARNING - No stock data could be fetched.
+2024-09-16 20:48:19,570 - groupme_bot - WARNING - Unable to fetch top stocks data.
+2024-09-16 20:48:19,570 - groupme_bot - WARNING - Failed to fetch data for 100 symbols: META, GOOG, GOOGL, NVDA, AVGO, AMZN, AAPL, MSFT, LLY, TSLA, V, MA, UNH, JPM, HD, WMT, XOM, ORCL, MRK, ABBV, ADBE, CSCO, COST, PEP, BAC, KO, CVX, BRK.B, CRM, TMO, ACN, LIN, DHR, PFE, MCD, AMD, NFLX, CMCSA, TMUS, ABT, WFC, PM, DIS, MS, UPS, NKE, AMGN, TXN, COP, CAT, VZ, UNP, INTU, INTC, NEE, BMY, BA, LOW, IBM, RTX, QCOM, HON, AMAT, GE, AXP, SPGI, PLD, DE, NOW, SBUX, BKNG, LMT, ELV, MDT, GS, SCHW, SYK, ISRG, ADP, TJX, MDLZ, T, VRTX, GILD, BLK, ADI, LRCX, ZTS, CCI, CVS, ETN, RSG, MMC, CI, CHTR, FIS, REGN, SPGI, EXC, AON
+2024-09-16 20:48:20,086 - groupme_bot - WARNING - Not enough data for symbol: MSFT
+2024-09-16 20:48:20,092 - groupme_bot - WARNING - Not enough data for symbol: GOOG
+2024-09-16 20:48:20,098 - groupme_bot - WARNING - Not enough data for symbol: NVDA
+2024-09-16 20:48:20,118 - groupme_bot - WARNING - Not enough data for symbol: TSLA
+2024-09-16 20:48:20,141 - groupme_bot - WARNING - Not enough data for symbol: AMZN
+2024-09-16 20:48:20,142 - groupme_bot - WARNING - Not enough data for symbol: GOOGL
+2024-09-16 20:48:20,145 - groupme_bot - WARNING - Not enough data for symbol: V
+2024-09-16 20:48:20,151 - groupme_bot - WARNING - Not enough data for symbol: META
+2024-09-16 20:48:20,152 - groupme_bot - WARNING - Not enough data for symbol: WMT
+2024-09-16 20:48:20,154 - groupme_bot - WARNING - Not enough data for symbol: AVGO
+2024-09-16 20:48:20,161 - groupme_bot - WARNING - Not enough data for symbol: AAPL
+2024-09-16 20:48:20,199 - groupme_bot - WARNING - Not enough data for symbol: CVX
+2024-09-16 20:48:20,213 - groupme_bot - WARNING - Not enough data for symbol: JPM
+2024-09-16 20:48:20,227 - groupme_bot - WARNING - Not enough data for symbol: LLY
+2024-09-16 20:48:20,240 - groupme_bot - WARNING - Not enough data for symbol: MA
+2024-09-16 20:48:20,243 - groupme_bot - WARNING - Not enough data for symbol: ORCL
+2024-09-16 20:48:20,256 - groupme_bot - WARNING - Not enough data for symbol: UNH
+2024-09-16 20:48:20,265 - groupme_bot - WARNING - Not enough data for symbol: HD
+2024-09-16 20:48:20,289 - groupme_bot - WARNING - Not enough data for symbol: XOM
+2024-09-16 20:48:20,295 - groupme_bot - WARNING - Not enough data for symbol: ABBV
+2024-09-16 20:48:20,319 - groupme_bot - WARNING - Not enough data for symbol: MRK
+2024-09-16 20:48:20,405 - groupme_bot - WARNING - Not enough data for symbol: KO
+2024-09-16 20:48:21,121 - groupme_bot - WARNING - Not enough data for symbol: PFE
+2024-09-16 20:48:21,122 - groupme_bot - WARNING - Not enough data for symbol: ACN
+2024-09-16 20:48:21,124 - groupme_bot - WARNING - Not enough data for symbol: MCD
+2024-09-16 20:48:21,128 - groupme_bot - WARNING - Not enough data for symbol: TMO
+2024-09-16 20:48:21,182 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-16 20:48:21,183 - groupme_bot - WARNING - Not enough data for symbol: ADBE
+2024-09-16 20:48:21,186 - groupme_bot - WARNING - Not enough data for symbol: CSCO
+2024-09-16 20:48:21,195 - groupme_bot - WARNING - Not enough data for symbol: COST
+2024-09-16 20:48:21,208 - groupme_bot - WARNING - Not enough data for symbol: CRM
+2024-09-16 20:48:21,209 - groupme_bot - WARNING - Not enough data for symbol: BAC
+2024-09-16 20:48:21,213 - groupme_bot - WARNING - Not enough data for symbol: PEP
+2024-09-16 20:48:21,222 - groupme_bot - WARNING - Not enough data for symbol: NKE
+2024-09-16 20:48:21,232 - groupme_bot - WARNING - Not enough data for symbol: CMCSA
+2024-09-16 20:48:21,237 - groupme_bot - WARNING - Not enough data for symbol: DHR
+2024-09-16 20:48:21,251 - groupme_bot - WARNING - Not enough data for symbol: TXN
+2024-09-16 20:48:21,259 - groupme_bot - WARNING - Not enough data for symbol: PM
+2024-09-16 20:48:21,261 - groupme_bot - WARNING - Not enough data for symbol: LIN
+2024-09-16 20:48:21,264 - groupme_bot - WARNING - Not enough data for symbol: NFLX
+2024-09-16 20:48:21,269 - groupme_bot - WARNING - Not enough data for symbol: AMD
+2024-09-16 20:48:21,289 - groupme_bot - WARNING - Not enough data for symbol: AMGN
+2024-09-16 20:48:21,289 - groupme_bot - WARNING - Not enough data for symbol: COP
+2024-09-16 20:48:21,299 - groupme_bot - WARNING - Not enough data for symbol: TMUS
+2024-09-16 20:48:21,313 - groupme_bot - WARNING - Not enough data for symbol: UNP
+2024-09-16 20:48:21,324 - groupme_bot - WARNING - Not enough data for symbol: ABT
+2024-09-16 20:48:21,357 - groupme_bot - WARNING - Not enough data for symbol: UPS
+2024-09-16 20:48:21,360 - groupme_bot - WARNING - Not enough data for symbol: DIS
+2024-09-16 20:48:21,369 - groupme_bot - WARNING - Not enough data for symbol: MS
+2024-09-16 20:48:21,371 - groupme_bot - WARNING - Not enough data for symbol: WFC
+2024-09-16 20:48:21,391 - groupme_bot - WARNING - Not enough data for symbol: BMY
+2024-09-16 20:48:21,400 - groupme_bot - WARNING - Not enough data for symbol: IBM
+2024-09-16 20:48:21,401 - groupme_bot - WARNING - Not enough data for symbol: LOW
+2024-09-16 20:48:21,404 - groupme_bot - WARNING - Not enough data for symbol: RTX
+2024-09-16 20:48:21,409 - groupme_bot - WARNING - Not enough data for symbol: INTC
+2024-09-16 20:48:21,410 - groupme_bot - WARNING - Not enough data for symbol: VZ
+2024-09-16 20:48:21,417 - groupme_bot - WARNING - Not enough data for symbol: CAT
+2024-09-16 20:48:21,428 - groupme_bot - WARNING - Not enough data for symbol: INTU
+2024-09-16 20:48:21,429 - groupme_bot - WARNING - Not enough data for symbol: QCOM
+2024-09-16 20:48:21,430 - groupme_bot - WARNING - Not enough data for symbol: NEE
+2024-09-16 20:48:21,438 - groupme_bot - WARNING - Not enough data for symbol: SPGI
+2024-09-16 20:48:21,463 - groupme_bot - WARNING - Not enough data for symbol: PLD
+2024-09-16 20:48:21,463 - groupme_bot - WARNING - Not enough data for symbol: LMT
+2024-09-16 20:48:21,472 - groupme_bot - WARNING - Not enough data for symbol: NOW
+2024-09-16 20:48:21,479 - groupme_bot - WARNING - Not enough data for symbol: BA
+2024-09-16 20:48:21,498 - groupme_bot - WARNING - Not enough data for symbol: MDT
+2024-09-16 20:48:21,508 - groupme_bot - WARNING - Not enough data for symbol: SCHW
+2024-09-16 20:48:21,510 - groupme_bot - WARNING - Not enough data for symbol: AMAT
+2024-09-16 20:48:21,530 - groupme_bot - WARNING - Not enough data for symbol: SBUX
+2024-09-16 20:48:21,531 - groupme_bot - WARNING - Not enough data for symbol: SYK
+2024-09-16 20:48:21,541 - groupme_bot - WARNING - Not enough data for symbol: BKNG
+2024-09-16 20:48:21,552 - groupme_bot - WARNING - Not enough data for symbol: TJX
+2024-09-16 20:48:21,555 - groupme_bot - WARNING - Not enough data for symbol: AXP
+2024-09-16 20:48:21,558 - groupme_bot - WARNING - Not enough data for symbol: ELV
+2024-09-16 20:48:21,562 - groupme_bot - WARNING - Not enough data for symbol: DE
+2024-09-16 20:48:21,572 - groupme_bot - WARNING - Not enough data for symbol: GE
+2024-09-16 20:48:21,575 - groupme_bot - WARNING - Not enough data for symbol: HON
+2024-09-16 20:48:21,579 - groupme_bot - WARNING - Not enough data for symbol: BLK
+2024-09-16 20:48:21,589 - groupme_bot - WARNING - Not enough data for symbol: MDLZ
+2024-09-16 20:48:21,590 - groupme_bot - WARNING - Not enough data for symbol: GILD
+2024-09-16 20:48:21,602 - groupme_bot - WARNING - Not enough data for symbol: VRTX
+2024-09-16 20:48:21,604 - groupme_bot - WARNING - Not enough data for symbol: ADI
+2024-09-16 20:48:21,604 - groupme_bot - WARNING - Not enough data for symbol: GS
+2024-09-16 20:48:21,616 - groupme_bot - WARNING - Not enough data for symbol: ISRG
+2024-09-16 20:48:21,632 - groupme_bot - WARNING - Not enough data for symbol: ADP
+2024-09-16 20:48:21,661 - groupme_bot - WARNING - Not enough data for symbol: REGN
+2024-09-16 20:48:21,687 - groupme_bot - WARNING - Not enough data for symbol: CI
+2024-09-16 20:48:21,687 - groupme_bot - WARNING - Not enough data for symbol: LRCX
+2024-09-16 20:48:21,699 - groupme_bot - WARNING - Not enough data for symbol: CCI
+2024-09-16 20:48:21,700 - groupme_bot - WARNING - Not enough data for symbol: MMC
+2024-09-16 20:48:21,702 - groupme_bot - WARNING - Not enough data for symbol: T
+2024-09-16 20:48:21,707 - groupme_bot - WARNING - Not enough data for symbol: ZTS
+2024-09-16 20:48:21,739 - groupme_bot - WARNING - Not enough data for symbol: ETN
+2024-09-16 20:48:21,741 - groupme_bot - WARNING - Not enough data for symbol: RSG
+2024-09-16 20:48:21,742 - groupme_bot - WARNING - Not enough data for symbol: CVS
+2024-09-16 20:48:21,784 - groupme_bot - WARNING - Not enough data for symbol: CHTR
+2024-09-16 20:48:21,800 - groupme_bot - WARNING - Not enough data for symbol: SPGI
+2024-09-16 20:48:21,807 - groupme_bot - WARNING - Not enough data for symbol: FIS
+2024-09-16 20:48:21,833 - groupme_bot - WARNING - Not enough data for symbol: EXC
+2024-09-16 20:48:21,854 - groupme_bot - WARNING - Not enough data for symbol: AON
+2024-09-16 20:48:21,855 - groupme_bot - WARNING - No stock data could be fetched.
+2024-09-16 20:48:21,856 - groupme_bot - WARNING - Unable to fetch top stocks data.
+2024-09-16 20:48:21,856 - groupme_bot - WARNING - Failed to fetch data for 100 symbols: MSFT, GOOG, NVDA, TSLA, AMZN, GOOGL, V, META, WMT, AVGO, AAPL, CVX, JPM, LLY, MA, ORCL, UNH, HD, XOM, ABBV, MRK, KO, PFE, ACN, MCD, TMO, BRK.B, ADBE, CSCO, COST, CRM, BAC, PEP, NKE, CMCSA, DHR, TXN, PM, LIN, NFLX, AMD, AMGN, COP, TMUS, UNP, ABT, UPS, DIS, MS, WFC, BMY, IBM, LOW, RTX, INTC, VZ, CAT, INTU, QCOM, NEE, SPGI, PLD, LMT, NOW, BA, MDT, SCHW, AMAT, SBUX, SYK, BKNG, TJX, AXP, ELV, DE, GE, HON, BLK, MDLZ, GILD, VRTX, ADI, GS, ISRG, ADP, REGN, CI, LRCX, CCI, MMC, T, ZTS, ETN, RSG, CVS, CHTR, SPGI, FIS, EXC, AON
+2024-09-16 20:50:15,815 - groupme_bot - WARNING - Not enough data for symbol: GOOG
+2024-09-16 20:50:15,826 - groupme_bot - WARNING - Not enough data for symbol: META
+2024-09-16 20:50:15,826 - groupme_bot - WARNING - Not enough data for symbol: NVDA
+2024-09-16 20:50:15,827 - groupme_bot - WARNING - Not enough data for symbol: AMZN
+2024-09-16 20:50:15,840 - groupme_bot - WARNING - Not enough data for symbol: AVGO
+2024-09-16 20:50:15,847 - groupme_bot - WARNING - Not enough data for symbol: GOOGL
+2024-09-16 20:50:15,848 - groupme_bot - WARNING - Not enough data for symbol: MSFT
+2024-09-16 20:50:15,864 - groupme_bot - WARNING - Not enough data for symbol: AAPL
+2024-09-16 20:50:15,918 - groupme_bot - WARNING - Not enough data for symbol: LLY
+2024-09-16 20:50:17,044 - groupme_bot - WARNING - Not enough data for symbol: TSLA
+2024-09-16 20:50:17,052 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-16 20:50:17,058 - groupme_bot - WARNING - Not enough data for symbol: V
+2024-09-16 20:50:17,069 - groupme_bot - WARNING - Not enough data for symbol: MA
+2024-09-16 20:50:17,071 - groupme_bot - WARNING - Not enough data for symbol: UNH
+2024-09-16 20:50:17,076 - groupme_bot - WARNING - Not enough data for symbol: WMT
+2024-09-16 20:50:17,083 - groupme_bot - WARNING - Not enough data for symbol: JPM
+2024-09-16 20:50:17,084 - groupme_bot - WARNING - Not enough data for symbol: HD
+2024-09-16 20:50:17,146 - groupme_bot - WARNING - Not enough data for symbol: ORCL
+2024-09-16 20:50:17,170 - groupme_bot - WARNING - Not enough data for symbol: ABBV
+2024-09-16 20:50:17,173 - groupme_bot - WARNING - Not enough data for symbol: COST
+2024-09-16 20:50:17,176 - groupme_bot - WARNING - Not enough data for symbol: ADBE
+2024-09-16 20:50:17,200 - groupme_bot - WARNING - Not enough data for symbol: XOM
+2024-09-16 20:50:17,203 - groupme_bot - WARNING - Not enough data for symbol: BAC
+2024-09-16 20:50:17,208 - groupme_bot - WARNING - Not enough data for symbol: MRK
+2024-09-16 20:50:17,216 - groupme_bot - WARNING - Not enough data for symbol: PEP
+2024-09-16 20:50:17,226 - groupme_bot - WARNING - Not enough data for symbol: CVX
+2024-09-16 20:50:17,227 - groupme_bot - WARNING - Not enough data for symbol: KO
+2024-09-16 20:50:17,238 - groupme_bot - WARNING - Not enough data for symbol: CSCO
+2024-09-16 20:50:17,287 - groupme_bot - WARNING - Not enough data for symbol: CRM
+2024-09-16 20:50:17,292 - groupme_bot - WARNING - Not enough data for symbol: TMO
+2024-09-16 20:50:17,311 - groupme_bot - WARNING - Not enough data for symbol: ACN
+2024-09-16 20:50:17,318 - groupme_bot - WARNING - Not enough data for symbol: NFLX
+2024-09-16 20:50:17,340 - groupme_bot - WARNING - Not enough data for symbol: LIN
+2024-09-16 20:50:17,342 - groupme_bot - WARNING - Not enough data for symbol: DHR
+2024-09-16 20:50:17,346 - groupme_bot - WARNING - Not enough data for symbol: MCD
+2024-09-16 20:50:17,347 - groupme_bot - WARNING - Not enough data for symbol: ABT
+2024-09-16 20:50:17,350 - groupme_bot - WARNING - Not enough data for symbol: CMCSA
+2024-09-16 20:50:17,366 - groupme_bot - WARNING - Not enough data for symbol: AMD
+2024-09-16 20:50:17,393 - groupme_bot - WARNING - Not enough data for symbol: TMUS
+2024-09-16 20:50:17,411 - groupme_bot - WARNING - Not enough data for symbol: PFE
+2024-09-16 20:50:17,425 - groupme_bot - WARNING - Not enough data for symbol: NKE
+2024-09-16 20:50:17,445 - groupme_bot - WARNING - Not enough data for symbol: DIS
+2024-09-16 20:50:17,458 - groupme_bot - WARNING - Not enough data for symbol: PM
+2024-09-16 20:50:17,471 - groupme_bot - WARNING - Not enough data for symbol: AMGN
+2024-09-16 20:50:17,476 - groupme_bot - WARNING - Not enough data for symbol: MS
+2024-09-16 20:50:17,482 - groupme_bot - WARNING - Not enough data for symbol: WFC
+2024-09-16 20:50:17,486 - groupme_bot - WARNING - Not enough data for symbol: TXN
+2024-09-16 20:50:17,499 - groupme_bot - WARNING - Not enough data for symbol: COP
+2024-09-16 20:50:17,510 - groupme_bot - WARNING - Not enough data for symbol: UPS
+2024-09-16 20:50:17,574 - groupme_bot - WARNING - Not enough data for symbol: UNP
+2024-09-16 20:50:17,584 - groupme_bot - WARNING - Not enough data for symbol: INTU
+2024-09-16 20:50:17,584 - groupme_bot - WARNING - Not enough data for symbol: NEE
+2024-09-16 20:50:17,595 - groupme_bot - WARNING - Not enough data for symbol: INTC
+2024-09-16 20:50:17,617 - groupme_bot - WARNING - Not enough data for symbol: CAT
+2024-09-16 20:50:17,629 - groupme_bot - WARNING - Not enough data for symbol: VZ
+2024-09-16 20:50:17,637 - groupme_bot - WARNING - Not enough data for symbol: BMY
+2024-09-16 20:50:17,640 - groupme_bot - WARNING - Not enough data for symbol: IBM
+2024-09-16 20:50:17,648 - groupme_bot - WARNING - Not enough data for symbol: LOW
+2024-09-16 20:50:17,704 - groupme_bot - WARNING - Not enough data for symbol: BA
+2024-09-16 20:50:17,707 - groupme_bot - WARNING - Not enough data for symbol: QCOM
+2024-09-16 20:50:17,715 - groupme_bot - WARNING - Not enough data for symbol: RTX
+2024-09-16 20:50:17,721 - groupme_bot - WARNING - Not enough data for symbol: AMAT
+2024-09-16 20:50:17,732 - groupme_bot - WARNING - Not enough data for symbol: HON
+2024-09-16 20:50:17,740 - groupme_bot - WARNING - Not enough data for symbol: SPGI
+2024-09-16 20:50:17,759 - groupme_bot - WARNING - Not enough data for symbol: PLD
+2024-09-16 20:50:17,768 - groupme_bot - WARNING - Not enough data for symbol: GE
+2024-09-16 20:50:17,780 - groupme_bot - WARNING - Not enough data for symbol: DE
+2024-09-16 20:50:17,782 - groupme_bot - WARNING - Not enough data for symbol: AXP
+2024-09-16 20:50:17,795 - groupme_bot - WARNING - Not enough data for symbol: NOW
+2024-09-16 20:50:17,806 - groupme_bot - WARNING - Not enough data for symbol: BKNG
+2024-09-16 20:50:17,811 - groupme_bot - WARNING - Not enough data for symbol: SBUX
+2024-09-16 20:50:17,821 - groupme_bot - WARNING - Not enough data for symbol: LMT
+2024-09-16 20:50:17,823 - groupme_bot - WARNING - Not enough data for symbol: ELV
+2024-09-16 20:50:17,866 - groupme_bot - WARNING - Not enough data for symbol: GS
+2024-09-16 20:50:17,886 - groupme_bot - WARNING - Not enough data for symbol: ISRG
+2024-09-16 20:50:17,896 - groupme_bot - WARNING - Not enough data for symbol: SCHW
+2024-09-16 20:50:17,897 - groupme_bot - WARNING - Not enough data for symbol: MDT
+2024-09-16 20:50:17,902 - groupme_bot - WARNING - Not enough data for symbol: SYK
+2024-09-16 20:50:17,920 - groupme_bot - WARNING - Not enough data for symbol: ADP
+2024-09-16 20:50:17,929 - groupme_bot - WARNING - Not enough data for symbol: MDLZ
+2024-09-16 20:50:17,933 - groupme_bot - WARNING - Not enough data for symbol: TJX
+2024-09-16 20:50:17,934 - groupme_bot - WARNING - Not enough data for symbol: BLK
+2024-09-16 20:50:17,940 - groupme_bot - WARNING - Not enough data for symbol: T
+2024-09-16 20:50:17,957 - groupme_bot - WARNING - Not enough data for symbol: GILD
+2024-09-16 20:50:17,984 - groupme_bot - WARNING - Not enough data for symbol: REGN
+2024-09-16 20:50:17,993 - groupme_bot - WARNING - Not enough data for symbol: ADI
+2024-09-16 20:50:17,997 - groupme_bot - WARNING - Not enough data for symbol: MMC
+2024-09-16 20:50:18,009 - groupme_bot - WARNING - Not enough data for symbol: LRCX
+2024-09-16 20:50:18,032 - groupme_bot - WARNING - Not enough data for symbol: CCI
+2024-09-16 20:50:18,048 - groupme_bot - WARNING - Not enough data for symbol: CVS
+2024-09-16 20:50:18,050 - groupme_bot - WARNING - Not enough data for symbol: VRTX
+2024-09-16 20:50:18,050 - groupme_bot - WARNING - Not enough data for symbol: ZTS
+2024-09-16 20:50:18,081 - groupme_bot - WARNING - Not enough data for symbol: SPGI
+2024-09-16 20:50:18,107 - groupme_bot - WARNING - Not enough data for symbol: FIS
+2024-09-16 20:50:18,115 - groupme_bot - WARNING - Not enough data for symbol: CHTR
+2024-09-16 20:50:18,115 - groupme_bot - WARNING - Not enough data for symbol: RSG
+2024-09-16 20:50:18,128 - groupme_bot - WARNING - Not enough data for symbol: ETN
+2024-09-16 20:50:18,178 - groupme_bot - WARNING - Not enough data for symbol: EXC
+2024-09-16 20:50:18,186 - groupme_bot - WARNING - Not enough data for symbol: AON
+2024-09-16 20:50:18,188 - groupme_bot - WARNING - Not enough data for symbol: CI
+2024-09-16 20:50:18,189 - groupme_bot - WARNING - No stock data could be fetched.
+2024-09-16 20:50:18,190 - groupme_bot - WARNING - Unable to fetch top stocks data.
+2024-09-16 20:50:18,190 - groupme_bot - WARNING - Failed to fetch data for 100 symbols: GOOG, META, NVDA, AMZN, AVGO, GOOGL, MSFT, AAPL, LLY, TSLA, BRK.B, V, MA, UNH, WMT, JPM, HD, ORCL, ABBV, COST, ADBE, XOM, BAC, MRK, PEP, CVX, KO, CSCO, CRM, TMO, ACN, NFLX, LIN, DHR, MCD, ABT, CMCSA, AMD, TMUS, PFE, NKE, DIS, PM, AMGN, MS, WFC, TXN, COP, UPS, UNP, INTU, NEE, INTC, CAT, VZ, BMY, IBM, LOW, BA, QCOM, RTX, AMAT, HON, SPGI, PLD, GE, DE, AXP, NOW, BKNG, SBUX, LMT, ELV, GS, ISRG, SCHW, MDT, SYK, ADP, MDLZ, TJX, BLK, T, GILD, REGN, ADI, MMC, LRCX, CCI, CVS, VRTX, ZTS, SPGI, FIS, CHTR, RSG, ETN, EXC, AON, CI
+2024-09-16 20:53:13,993 - groupme_bot - INFO - Fetched 100 S&P 500 symbols.
+2024-09-16 20:53:13,996 - groupme_bot - INFO - Fetched economic calendar with 15 events.
+2024-09-16 20:53:16,358 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-16 20:53:17,285 - groupme_bot - INFO - Fetched stock data for 99 symbols.
+2024-09-16 20:53:17,286 - groupme_bot - INFO - Successfully fetched data for 99 stocks.
+2024-09-16 20:53:17,286 - groupme_bot - WARNING - Failed to fetch data for 1 symbols: BRK.B
+2024-09-16 20:53:17,441 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-16 20:53:28,140 - groupme_bot - INFO - Fetched 100 S&P 500 symbols.
+2024-09-16 20:53:28,146 - groupme_bot - INFO - Fetched economic calendar with 15 events.
+2024-09-16 20:53:29,007 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-16 20:53:30,177 - groupme_bot - INFO - Fetched stock data for 99 symbols.
+2024-09-16 20:53:30,177 - groupme_bot - INFO - Successfully fetched data for 99 stocks.
+2024-09-16 20:53:30,177 - groupme_bot - WARNING - Failed to fetch data for 1 symbols: BRK.B
+2024-09-16 20:53:30,368 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-16 21:05:37,062 - groupme_bot - INFO - Fetched 100 S&P 500 symbols.
+2024-09-16 21:05:37,077 - groupme_bot - INFO - Fetched economic calendar with 15 events.
+2024-09-16 21:05:42,474 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-16 21:05:43,744 - groupme_bot - INFO - Fetched stock data for 99 symbols.
+2024-09-16 21:05:43,745 - groupme_bot - INFO - Successfully fetched data for 99 stocks.
+2024-09-16 21:05:43,745 - groupme_bot - WARNING - Failed to fetch data for 1 symbols: BRK.B
+2024-09-16 21:05:44,048 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-16 21:06:29,472 - groupme_bot - INFO - Received message: {"text": "!help", "sender_type": "user"}
+2024-09-16 21:06:29,472 - groupme_bot - INFO - Processed message: !help
+2024-09-16 21:08:58,433 - groupme_bot - INFO - Received message: {"text": "!usage", "sender_type": "user"}
+2024-09-16 21:08:58,433 - groupme_bot - INFO - Processed message: !usage
+2024-09-16 21:09:11,551 - groupme_bot - INFO - Received message: {"text": "!ai What is the capital of France?", "sender_type": "user"}
+2024-09-16 21:09:11,551 - groupme_bot - INFO - Processed message: !ai What is the capital of France?
+2024-09-16 21:09:11,551 - groupme_bot - INFO - Generating AI response for prompt: 'What is the capital of France?'
+2024-09-16 21:09:12,318 - groupme_bot - INFO - AI response generated: The capital of France is Paris.
+2024-09-16 21:09:22,487 - groupme_bot - INFO - Received message: {"text": "!image A futuristic city skyline", "sender_type": "user"}
+2024-09-16 21:09:22,487 - groupme_bot - INFO - Processed message: !image A futuristic city skyline
+2024-09-16 21:09:22,487 - groupme_bot - INFO - Generating image for prompt: 'A futuristic city skyline'
+2024-09-16 21:09:22,487 - groupme_bot - INFO - Attempting to generate image with prompt: A futuristic city skyline
+2024-09-16 21:09:38,832 - groupme_bot - INFO - Image generated successfully: https://oaidalleapiprodscus.blob.core.windows.net/private/org-nkLKrqqG87GQ8w0ZEt7uv8wo/user-nIAGZtZJ3tVjyz1sH7STnCfA/img-feqrbIm3vdGLzY3VFIPBfX1D.png?st=2024-09-17T00%3A09%3A38Z&se=2024-09-17T02%3A09%3A38Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-09-16T23%3A42%3A53Z&ske=2024-09-17T23%3A42%3A53Z&sks=b&skv=2024-08-04&sig=C%2B9kFfE567e7Db60ZyIKJHa0GkWOaZWeYBUwit91ihU%3D
+2024-09-16 21:09:38,833 - groupme_bot - INFO - Image generated successfully: https://oaidalleapiprodscus.blob.core.windows.net/private/org-nkLKrqqG87GQ8w0ZEt7uv8wo/user-nIAGZtZJ3tVjyz1sH7STnCfA/img-feqrbIm3vdGLzY3VFIPBfX1D.png?st=2024-09-17T00%3A09%3A38Z&se=2024-09-17T02%3A09%3A38Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-09-16T23%3A42%3A53Z&ske=2024-09-17T23%3A42%3A53Z&sks=b&skv=2024-08-04&sig=C%2B9kFfE567e7Db60ZyIKJHa0GkWOaZWeYBUwit91ihU%3D
+2024-09-16 21:09:43,228 - groupme_bot - INFO - Message with image sent to GroupMe
+2024-09-16 21:09:50,521 - groupme_bot - INFO - Received message: {"text": "!market", "sender_type": "user"}
+2024-09-16 21:09:50,521 - groupme_bot - INFO - Processed message: !market
+2024-09-16 21:09:50,521 - groupme_bot - INFO - Processing !market command
+2024-09-16 21:09:50,521 - groupme_bot - INFO - Fetched 100 S&P 500 symbols.
+2024-09-16 21:09:50,526 - groupme_bot - INFO - Fetched economic calendar with 15 events.
+2024-09-16 21:09:51,806 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-16 21:09:53,211 - groupme_bot - INFO - Fetched stock data for 99 symbols.
+2024-09-16 21:09:53,211 - groupme_bot - INFO - Successfully fetched data for 99 stocks.
+2024-09-16 21:09:53,211 - groupme_bot - WARNING - Failed to fetch data for 1 symbols: BRK.B
+2024-09-16 21:09:53,569 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-16 21:14:54,262 - groupme_bot - INFO - Fetched 100 S&P 500 symbols.
+2024-09-16 21:14:54,264 - groupme_bot - INFO - Fetched economic calendar with 15 events.
+2024-09-16 21:14:55,786 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-16 21:14:56,881 - groupme_bot - INFO - Fetched stock data for 99 symbols.
+2024-09-16 21:14:56,881 - groupme_bot - INFO - Successfully fetched data for 99 stocks.
+2024-09-16 21:14:56,881 - groupme_bot - WARNING - Failed to fetch data for 1 symbols: BRK.B
+2024-09-16 21:14:57,155 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-16 21:22:57,955 - groupme_bot - INFO - Fetched 100 S&P 500 symbols.
+2024-09-16 21:22:57,957 - groupme_bot - INFO - Fetched economic calendar with 15 events.
+2024-09-16 21:22:59,321 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-16 21:23:00,538 - groupme_bot - INFO - Fetched stock data for 99 symbols.
+2024-09-16 21:23:00,538 - groupme_bot - INFO - Successfully fetched data for 99 stocks.
+2024-09-16 21:23:00,538 - groupme_bot - WARNING - Failed to fetch data for 1 symbols: BRK.B
+2024-09-16 21:23:01,123 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-16 21:23:09,210 - groupme_bot - INFO - Fetched 100 S&P 500 symbols.
+2024-09-16 21:23:09,216 - groupme_bot - INFO - Fetched economic calendar with 15 events.
+2024-09-16 21:23:11,448 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-16 21:23:12,463 - groupme_bot - INFO - Fetched stock data for 99 symbols.
+2024-09-16 21:23:12,463 - groupme_bot - INFO - Successfully fetched data for 99 stocks.
+2024-09-16 21:23:12,463 - groupme_bot - WARNING - Failed to fetch data for 1 symbols: BRK.B
+2024-09-16 21:23:12,667 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-16 21:25:14,833 - groupme_bot - INFO - Fetched 99 S&P 500 symbols.
+2024-09-16 21:25:14,840 - groupme_bot - INFO - Fetched economic calendar with 15 events.
+2024-09-16 21:25:16,764 - groupme_bot - INFO - Fetched stock data for 99 symbols.
+2024-09-16 21:25:16,764 - groupme_bot - INFO - Successfully fetched data for 99 stocks.
+2024-09-16 21:25:17,063 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-16 21:25:20,915 - groupme_bot - INFO - Fetched 99 S&P 500 symbols.
+2024-09-16 21:25:20,917 - groupme_bot - INFO - Fetched economic calendar with 15 events.
+2024-09-16 21:25:22,352 - groupme_bot - INFO - Fetched stock data for 99 symbols.
+2024-09-16 21:25:22,352 - groupme_bot - INFO - Successfully fetched data for 99 stocks.
+2024-09-16 21:25:22,818 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-16 21:25:22,830 - groupme_bot - INFO - Fetched 99 S&P 500 symbols.
+2024-09-16 21:25:22,833 - groupme_bot - INFO - Fetched economic calendar with 15 events.
+2024-09-16 21:25:23,936 - groupme_bot - INFO - Fetched stock data for 99 symbols.
+2024-09-16 21:25:23,936 - groupme_bot - INFO - Successfully fetched data for 99 stocks.
+2024-09-16 21:25:24,399 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-16 21:29:38,150 - groupme_bot - INFO - Fetched 99 S&P 500 symbols.
+2024-09-16 21:29:38,153 - groupme_bot - INFO - Fetched economic calendar with 15 events.
+2024-09-16 21:29:39,819 - groupme_bot - INFO - Fetched stock data for 99 symbols.
+2024-09-16 21:29:39,819 - groupme_bot - INFO - Successfully fetched data for 99 stocks.
+2024-09-16 21:29:40,291 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-16 22:22:32,263 - groupme_bot - INFO - Fetched stock data for 99 symbols.
+2024-09-16 22:58:45,624 - groupme_bot - INFO - Fetched stock data for 99 symbols.
+2024-09-16 22:58:54,966 - groupme_bot - INFO - Fetched 99 S&P 500 symbols.
+2024-09-16 22:58:54,976 - groupme_bot - INFO - Fetched economic calendar with 15 events.
+2024-09-16 22:58:56,324 - groupme_bot - INFO - Fetched stock data for 99 symbols.
+2024-09-16 22:58:56,324 - groupme_bot - INFO - Successfully fetched data for 99 stocks.
+2024-09-16 22:58:56,997 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 09:45:45,438 - INFO - Loaded 503 companies from S&P 500 list
+2024-09-17 09:45:45,438 - INFO - Opening URL: https://www.tradingview.com/markets/stocks-usa/earnings/
+2024-09-17 09:46:15,438 - INFO - Page loaded
+2024-09-17 09:46:16,909 - INFO - Clicked 'This Week' button
+2024-09-17 09:46:19,282 - INFO - Table found
+2024-09-17 09:46:19,461 - INFO - Saved 68 tickers for This Week
+2024-09-17 09:46:20,494 - INFO - Clicked 'Next Week' button
+2024-09-17 09:46:21,186 - INFO - Table found
+2024-09-17 09:46:22,697 - INFO - Saved 64 tickers for Next Week
+2024-09-17 09:46:22,697 - INFO - Earnings events saved to:
+2024-09-17 09:46:22,697 - INFO - This week: /Users/jose/Desktop/ExperimentalScripts/FINISHED/GroupMeBotRender/data/output/earnings_this_week.txt
+2024-09-17 09:46:22,697 - INFO - Next week: /Users/jose/Desktop/ExperimentalScripts/FINISHED/GroupMeBotRender/data/output/earnings_next_week.txt
+2024-09-17 10:04:51,127 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 10:04:51,969 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 10:04:58,638 - groupme_bot - INFO - Fetched stock data for 501 symbols.
+2024-09-17 10:06:13,859 - groupme_bot - INFO - Fetched 503 S&P 500 symbols.
+2024-09-17 10:06:13,869 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 10:06:16,173 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 10:06:16,176 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 10:06:23,298 - groupme_bot - INFO - Fetched stock data for 501 symbols.
+2024-09-17 10:06:23,299 - groupme_bot - INFO - Successfully fetched data for 501 stocks.
+2024-09-17 10:06:23,299 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BRK.B, BF.B
+2024-09-17 10:06:23,677 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 11:09:56,534 - groupme_bot - INFO - Fetched 503 S&P 500 symbols.
+2024-09-17 11:09:56,552 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 11:09:59,130 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 11:10:02,207 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 11:10:09,487 - groupme_bot - INFO - Fetched stock data for 501 symbols.
+2024-09-17 11:10:09,487 - groupme_bot - INFO - Successfully fetched data for 501 stocks.
+2024-09-17 11:10:09,487 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BF.B, BRK.B
+2024-09-17 11:10:10,087 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 11:40:34,117 - groupme_bot - INFO - Fetched 503 S&P 500 symbols.
+2024-09-17 11:40:34,124 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 11:40:44,720 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 11:40:49,340 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 11:40:57,096 - groupme_bot - INFO - Fetched stock data for 501 symbols.
+2024-09-17 11:40:57,096 - groupme_bot - INFO - Successfully fetched data for 501 stocks.
+2024-09-17 11:40:57,096 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BF.B, BRK.B
+2024-09-17 11:40:57,467 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 11:40:57,471 - groupme_bot - ERROR - Error generating market summary: 'str' object has no attribute 'strftime'
+2024-09-17 11:43:20,713 - groupme_bot - INFO - Fetched 503 S&P 500 symbols.
+2024-09-17 11:43:20,721 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 11:43:23,325 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 11:43:24,609 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 11:43:30,655 - groupme_bot - INFO - Fetched stock data for 501 symbols.
+2024-09-17 11:43:30,656 - groupme_bot - INFO - Successfully fetched data for 501 stocks.
+2024-09-17 11:43:30,656 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BF.B, BRK.B
+2024-09-17 11:43:30,846 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 11:43:30,859 - groupme_bot - ERROR - Error generating market summary: list index out of range
+2024-09-17 12:22:01,037 - groupme_bot - INFO - Fetched 503 S&P 500 symbols.
+2024-09-17 12:22:01,050 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 12:22:02,870 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 12:22:05,913 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 12:22:14,941 - groupme_bot - INFO - Fetched stock data for 501 symbols.
+2024-09-17 12:22:14,941 - groupme_bot - INFO - Successfully fetched data for 501 stocks.
+2024-09-17 12:22:14,942 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BF.B, BRK.B
+2024-09-17 12:22:15,575 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 12:23:37,199 - groupme_bot - INFO - Fetched 503 S&P 500 symbols.
+2024-09-17 12:23:37,203 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 12:23:39,881 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 12:23:39,918 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 12:23:46,634 - groupme_bot - INFO - Fetched stock data for 501 symbols.
+2024-09-17 12:23:46,635 - groupme_bot - INFO - Successfully fetched data for 501 stocks.
+2024-09-17 12:23:46,635 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BRK.B, BF.B
+2024-09-17 12:23:46,981 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 12:37:13,945 - groupme_bot - INFO - Fetched 503 S&P 500 symbols.
+2024-09-17 12:37:13,950 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 12:37:15,406 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 12:37:17,312 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 12:37:24,918 - groupme_bot - INFO - Fetched stock data for 501 symbols.
+2024-09-17 12:37:24,919 - groupme_bot - INFO - Successfully fetched data for 501 stocks.
+2024-09-17 12:37:24,919 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BF.B, BRK.B
+2024-09-17 12:37:25,334 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 12:37:25,339 - groupme_bot - ERROR - Error generating market summary: unconverted data remains when parsing with format "%H:%M": " AM", at position 0. You might want to try:
+    - passing `format` if your strings have a consistent format;
+    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+2024-09-17 12:39:14,570 - groupme_bot - INFO - Fetched 503 S&P 500 symbols.
+2024-09-17 12:39:14,574 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 12:39:18,493 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 12:39:18,902 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 12:39:26,193 - groupme_bot - INFO - Fetched stock data for 501 symbols.
+2024-09-17 12:39:26,193 - groupme_bot - INFO - Successfully fetched data for 501 stocks.
+2024-09-17 12:39:26,193 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BF.B, BRK.B
+2024-09-17 12:39:26,537 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 12:43:04,647 - groupme_bot - INFO - Fetched 503 S&P 500 symbols.
+2024-09-17 12:43:04,651 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 12:43:06,982 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 12:43:08,474 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 12:43:13,599 - groupme_bot - INFO - Fetched stock data for 501 symbols.
+2024-09-17 12:43:13,599 - groupme_bot - INFO - Successfully fetched data for 501 stocks.
+2024-09-17 12:43:13,599 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BF.B, BRK.B
+2024-09-17 12:43:13,827 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 12:43:40,488 - groupme_bot - INFO - Fetched 503 S&P 500 symbols.
+2024-09-17 12:43:40,492 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 12:43:43,443 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 12:43:44,616 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 12:43:50,379 - groupme_bot - INFO - Fetched stock data for 501 symbols.
+2024-09-17 12:43:50,380 - groupme_bot - INFO - Successfully fetched data for 501 stocks.
+2024-09-17 12:43:50,380 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BF.B, BRK.B
+2024-09-17 12:43:51,045 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 12:51:18,033 - groupme_bot - INFO - Fetched 503 S&P 500 symbols.
+2024-09-17 12:51:18,037 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 12:51:20,878 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 12:51:21,843 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 12:51:27,719 - groupme_bot - INFO - Fetched stock data for 501 symbols.
+2024-09-17 12:51:27,720 - groupme_bot - INFO - Successfully fetched data for 501 stocks.
+2024-09-17 12:51:27,720 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BF.B, BRK.B
+2024-09-17 12:51:28,208 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 12:51:58,581 - groupme_bot - INFO - Fetched 503 S&P 500 symbols.
+2024-09-17 12:51:58,589 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 12:52:01,179 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 12:52:02,459 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 12:52:09,378 - groupme_bot - INFO - Fetched stock data for 501 symbols.
+2024-09-17 12:52:09,379 - groupme_bot - INFO - Successfully fetched data for 501 stocks.
+2024-09-17 12:52:09,379 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BF.B, BRK.B
+2024-09-17 12:52:09,749 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 12:56:01,475 - groupme_bot - INFO - Fetched 503 S&P 500 symbols.
+2024-09-17 12:56:01,482 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 12:56:04,109 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 12:56:05,209 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 12:56:10,990 - groupme_bot - INFO - Fetched stock data for 501 symbols.
+2024-09-17 12:56:10,991 - groupme_bot - INFO - Successfully fetched data for 501 stocks.
+2024-09-17 12:56:10,991 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BF.B, BRK.B
+2024-09-17 12:56:11,382 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 12:56:30,572 - groupme_bot - INFO - Fetched 503 S&P 500 symbols.
+2024-09-17 12:56:30,576 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 12:56:33,112 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 12:56:35,180 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 12:56:42,007 - groupme_bot - INFO - Fetched stock data for 501 symbols.
+2024-09-17 12:56:42,007 - groupme_bot - INFO - Successfully fetched data for 501 stocks.
+2024-09-17 12:56:42,007 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BF.B, BRK.B
+2024-09-17 12:56:42,425 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 12:57:08,857 - groupme_bot - INFO - Fetched 503 S&P 500 symbols.
+2024-09-17 12:57:08,861 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 12:57:11,107 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 12:57:11,238 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 12:57:17,688 - groupme_bot - INFO - Fetched stock data for 501 symbols.
+2024-09-17 12:57:17,688 - groupme_bot - INFO - Successfully fetched data for 501 stocks.
+2024-09-17 12:57:17,688 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BRK.B, BF.B
+2024-09-17 12:57:18,063 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 12:59:26,447 - groupme_bot - INFO - Fetched 503 S&P 500 symbols.
+2024-09-17 12:59:26,453 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 12:59:28,780 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 12:59:29,825 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 12:59:37,230 - groupme_bot - INFO - Fetched stock data for 501 symbols.
+2024-09-17 12:59:37,230 - groupme_bot - INFO - Successfully fetched data for 501 stocks.
+2024-09-17 12:59:37,230 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BF.B, BRK.B
+2024-09-17 12:59:37,596 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 13:01:11,949 - groupme_bot - INFO - Fetched 503 S&P 500 symbols.
+2024-09-17 13:01:11,957 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 13:01:17,108 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 13:01:21,056 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 13:01:30,710 - groupme_bot - INFO - Fetched stock data for 501 symbols.
+2024-09-17 13:01:30,711 - groupme_bot - INFO - Successfully fetched data for 501 stocks.
+2024-09-17 13:01:30,711 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BF.B, BRK.B
+2024-09-17 13:01:30,989 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 13:03:06,144 - groupme_bot - INFO - Fetched 503 S&P 500 symbols.
+2024-09-17 13:03:06,148 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 13:03:08,546 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 13:03:11,860 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 13:03:16,632 - groupme_bot - INFO - Fetched stock data for 501 symbols.
+2024-09-17 13:03:16,633 - groupme_bot - INFO - Successfully fetched data for 501 stocks.
+2024-09-17 13:03:16,633 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BF.B, BRK.B
+2024-09-17 13:03:16,833 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 13:12:46,541 - groupme_bot - INFO - Fetched 519 S&P 500 symbols.
+2024-09-17 13:12:46,545 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 13:12:49,407 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 13:12:51,790 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 13:12:57,010 - groupme_bot - INFO - Fetched stock data for 517 symbols.
+2024-09-17 13:12:57,011 - groupme_bot - INFO - Successfully fetched data for 517 stocks.
+2024-09-17 13:12:57,011 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BRK.B, BF.B
+2024-09-17 13:12:57,471 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 13:16:47,257 - groupme_bot - INFO - Fetched 519 S&P 500 symbols.
+2024-09-17 13:16:47,265 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 13:16:50,175 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 13:16:52,248 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 13:16:56,424 - groupme_bot - INFO - Fetched stock data for 517 symbols.
+2024-09-17 13:16:56,424 - groupme_bot - INFO - Successfully fetched data for 517 stocks.
+2024-09-17 13:16:56,425 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BRK.B, BF.B
+2024-09-17 13:16:56,630 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 13:17:16,083 - groupme_bot - INFO - Web search results: - Top AI Developments of 2023 and what to expect in 2024 - Forbes: Warns It Will Retaliate After Biden Says He s Decided How To Respond To Killing Of 3 U S
+Soldiers
+AI Regulation and Risks
+With broad AI comes broad risks in everything from misinformation to AI-relate...
+- AI for everything: 10 Breakthrough Technologies 2024: 10 Breakthrough Technologies
+by Will Douglas Heaven
+Share
+Popular
+Deep Dive
+Artificial intelligence
+Google DeepMind used a large language model to solve an unsolved math problem
+They had to throw away...
+- AI in 2023: A year of breakthroughs that left no human thing ... - ZDNET: At the same time, China pursued a more state-centric approach, reflecting broader ideological divides and influencing international AI governance discussions.
+UK and France: The UK and France, as well...
+2024-09-17 13:35:36,704 - groupme_bot - WARNING - Earnings data file not found: /Users/jose/Desktop/ExperimentalScripts/FINISHED/GroupMeBotRender/src/../data/output/this_week_earnings.txt
+2024-09-17 13:35:36,704 - groupme_bot - WARNING - Earnings data file not found: /Users/jose/Desktop/ExperimentalScripts/FINISHED/GroupMeBotRender/src/../data/output/next_week_earnings.txt
+2024-09-17 13:37:13,972 - groupme_bot - WARNING - Earnings data file not found: /Users/jose/Desktop/ExperimentalScripts/FINISHED/GroupMeBotRender/src/../data/output/this_week_earnings.txt
+2024-09-17 13:37:13,973 - groupme_bot - WARNING - Earnings data file not found: /Users/jose/Desktop/ExperimentalScripts/FINISHED/GroupMeBotRender/src/../data/output/next_week_earnings.txt
+2024-09-17 13:37:15,386 - groupme_bot - WARNING - Earnings data file not found: /Users/jose/Desktop/ExperimentalScripts/FINISHED/GroupMeBotRender/src/../data/output/this_week_earnings.txt
+2024-09-17 13:37:15,387 - groupme_bot - WARNING - Earnings data file not found: /Users/jose/Desktop/ExperimentalScripts/FINISHED/GroupMeBotRender/src/../data/output/next_week_earnings.txt
+2024-09-17 13:37:15,821 - groupme_bot - WARNING - Earnings data file not found: /Users/jose/Desktop/ExperimentalScripts/FINISHED/GroupMeBotRender/src/../data/output/this_week_earnings.txt
+2024-09-17 13:37:15,821 - groupme_bot - WARNING - Earnings data file not found: /Users/jose/Desktop/ExperimentalScripts/FINISHED/GroupMeBotRender/src/../data/output/next_week_earnings.txt
+2024-09-17 13:37:15,998 - groupme_bot - WARNING - Earnings data file not found: /Users/jose/Desktop/ExperimentalScripts/FINISHED/GroupMeBotRender/src/../data/output/this_week_earnings.txt
+2024-09-17 13:37:15,998 - groupme_bot - WARNING - Earnings data file not found: /Users/jose/Desktop/ExperimentalScripts/FINISHED/GroupMeBotRender/src/../data/output/next_week_earnings.txt
+2024-09-17 13:42:37,032 - groupme_bot - INFO - Fetched 519 S&P 500 symbols.
+2024-09-17 13:42:37,048 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 13:42:40,294 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 13:42:42,194 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 13:42:46,385 - groupme_bot - INFO - Fetched stock data for 517 symbols.
+2024-09-17 13:42:46,386 - groupme_bot - INFO - Successfully fetched data for 517 stocks.
+2024-09-17 13:42:46,386 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BRK.B, BF.B
+2024-09-17 13:42:46,820 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 13:48:00,948 - groupme_bot - INFO - Fetched 519 S&P 500 symbols.
+2024-09-17 13:48:00,954 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 13:48:05,072 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 13:48:07,057 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 13:48:11,245 - groupme_bot - INFO - Fetched stock data for 517 symbols.
+2024-09-17 13:48:11,246 - groupme_bot - INFO - Successfully fetched data for 517 stocks.
+2024-09-17 13:48:11,246 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BRK.B, BF.B
+2024-09-17 13:48:11,508 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 13:52:18,342 - groupme_bot - INFO - Fetched 519 S&P 500 symbols.
+2024-09-17 13:52:18,350 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 13:52:21,883 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 13:52:26,889 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 13:52:31,574 - groupme_bot - INFO - Fetched stock data for 517 symbols.
+2024-09-17 13:52:31,575 - groupme_bot - INFO - Successfully fetched data for 517 stocks.
+2024-09-17 13:52:31,575 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BRK.B, BF.B
+2024-09-17 13:52:31,945 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 13:52:31,952 - groupme_bot - ERROR - Error generating market summary: strptime() argument 1 must be str, not datetime.time
+2024-09-17 13:55:33,496 - groupme_bot - INFO - Fetched 519 S&P 500 symbols.
+2024-09-17 13:55:33,503 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 13:55:36,706 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 13:55:38,737 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 13:55:42,967 - groupme_bot - INFO - Fetched stock data for 517 symbols.
+2024-09-17 13:55:42,968 - groupme_bot - INFO - Successfully fetched data for 517 stocks.
+2024-09-17 13:55:42,968 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BRK.B, BF.B
+2024-09-17 13:55:43,205 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 13:55:43,206 - groupme_bot - ERROR - Error in format_market_summary: isinstance() arg 2 must be a type, a tuple of types, or a union
+2024-09-17 13:55:43,206 - groupme_bot - ERROR - Economic calendar shape: (17, 4)
+2024-09-17 13:55:43,206 - groupme_bot - ERROR - Economic calendar columns: Index(['Release Date', 'Release Time (ET)', 'Release Name', 'Impact'], dtype='object')
+2024-09-17 13:55:43,209 - groupme_bot - ERROR - Sample of economic calendar:
+  Release Date Release Time (ET)            Release Name                  Impact
+0   2024-09-17          08:30:00  Core Retail Sales m\/m    High Impact Expected
+1   2024-09-17          08:30:00       Retail Sales m\/m    High Impact Expected
+2   2024-09-18          08:30:00        Building Permits  Medium Impact Expected
+3   2024-09-18          10:30:00   Crude Oil Inventories  Medium Impact Expected
+4   2024-09-18          14:00:00      Federal Funds Rate    High Impact Expected
+2024-09-17 13:55:43,209 - groupme_bot - ERROR - Error generating market summary: isinstance() arg 2 must be a type, a tuple of types, or a union
+2024-09-17 14:00:04,579 - groupme_bot - INFO - Fetched 519 S&P 500 symbols.
+2024-09-17 14:00:04,588 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 14:00:10,740 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 14:00:12,775 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 14:00:18,078 - groupme_bot - INFO - Fetched stock data for 517 symbols.
+2024-09-17 14:00:18,078 - groupme_bot - INFO - Successfully fetched data for 517 stocks.
+2024-09-17 14:00:18,078 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BRK.B, BF.B
+2024-09-17 14:00:18,514 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 14:00:18,521 - groupme_bot - ERROR - Error in format_market_summary: time data "08:30 AM" doesn't match format "%H:%M:%S", at position 0. You might want to try:
+    - passing `format` if your strings have a consistent format;
+    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+2024-09-17 14:00:18,521 - groupme_bot - ERROR - Economic calendar shape: (17, 4)
+2024-09-17 14:00:18,522 - groupme_bot - ERROR - Economic calendar columns: Index(['Release Date', 'Release Time (ET)', 'Release Name', 'Impact'], dtype='object')
+2024-09-17 14:00:18,526 - groupme_bot - ERROR - Sample of economic calendar:
+  Release Date Release Time (ET)               Release Name                Impact
+0   2024-09-17          08:30 AM     Core Retail Sales m\/m  High Impact Expected
+1   2024-09-17          08:30 AM          Retail Sales m\/m  High Impact Expected
+4   2024-09-18          02:00 PM         Federal Funds Rate  High Impact Expected
+5   2024-09-18          02:00 PM  FOMC Economic Projections  High Impact Expected
+6   2024-09-18          02:00 PM             FOMC Statement  High Impact Expected
+2024-09-17 14:00:18,526 - groupme_bot - ERROR - Error generating market summary: time data "08:30 AM" doesn't match format "%H:%M:%S", at position 0. You might want to try:
+    - passing `format` if your strings have a consistent format;
+    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+2024-09-17 14:02:14,019 - groupme_bot - INFO - Fetched 519 S&P 500 symbols.
+2024-09-17 14:02:14,024 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 14:02:18,998 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 14:02:21,776 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 14:02:27,555 - groupme_bot - INFO - Fetched stock data for 517 symbols.
+2024-09-17 14:02:27,555 - groupme_bot - INFO - Successfully fetched data for 517 stocks.
+2024-09-17 14:02:27,555 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BRK.B, BF.B
+2024-09-17 14:02:27,956 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 14:02:27,961 - groupme_bot - ERROR - Error in format_market_summary: isinstance() arg 2 must be a type, a tuple of types, or a union
+2024-09-17 14:02:27,961 - groupme_bot - ERROR - Economic calendar shape: (17, 4)
+2024-09-17 14:02:27,961 - groupme_bot - ERROR - Economic calendar columns: Index(['Release Date', 'Release Time (ET)', 'Release Name', 'Impact'], dtype='object')
+2024-09-17 14:02:27,964 - groupme_bot - ERROR - Sample of economic calendar:
+  Release Date Release Time (ET)               Release Name                Impact
+0   2024-09-17          08:30:00     Core Retail Sales m\/m  High Impact Expected
+1   2024-09-17          08:30:00          Retail Sales m\/m  High Impact Expected
+4   2024-09-18          14:00:00         Federal Funds Rate  High Impact Expected
+5   2024-09-18          14:00:00  FOMC Economic Projections  High Impact Expected
+6   2024-09-18          14:00:00             FOMC Statement  High Impact Expected
+2024-09-17 14:02:27,964 - groupme_bot - ERROR - Error generating market summary: isinstance() arg 2 must be a type, a tuple of types, or a union
+2024-09-17 14:05:24,547 - groupme_bot - INFO - Fetched 519 S&P 500 symbols.
+2024-09-17 14:05:24,555 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 14:05:27,245 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 14:05:29,762 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 14:05:35,394 - groupme_bot - INFO - Fetched stock data for 517 symbols.
+2024-09-17 14:05:35,394 - groupme_bot - INFO - Successfully fetched data for 517 stocks.
+2024-09-17 14:05:35,394 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BRK.B, BF.B
+2024-09-17 14:05:35,760 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 14:05:35,768 - groupme_bot - ERROR - Error in format_market_summary: isinstance() arg 2 must be a type, a tuple of types, or a union
+2024-09-17 14:05:35,769 - groupme_bot - ERROR - Economic calendar shape: (17, 4)
+2024-09-17 14:05:35,770 - groupme_bot - ERROR - Economic calendar columns: Index(['Release Date', 'Release Time (ET)', 'Release Name', 'Impact'], dtype='object')
+2024-09-17 14:05:35,773 - groupme_bot - ERROR - Sample of economic calendar:
+  Release Date Release Time (ET)            Release Name                  Impact
+0   2024-09-17          08:30:00  Core Retail Sales m\/m    High Impact Expected
+1   2024-09-17          08:30:00       Retail Sales m\/m    High Impact Expected
+2   2024-09-18          08:30:00        Building Permits  Medium Impact Expected
+3   2024-09-18          10:30:00   Crude Oil Inventories  Medium Impact Expected
+4   2024-09-18          14:00:00      Federal Funds Rate    High Impact Expected
+2024-09-17 14:05:35,773 - groupme_bot - ERROR - Error generating market summary: isinstance() arg 2 must be a type, a tuple of types, or a union
+2024-09-17 14:05:48,405 - groupme_bot - INFO - Fetched 519 S&P 500 symbols.
+2024-09-17 14:05:48,416 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 14:05:51,143 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 14:05:53,157 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 14:05:57,357 - groupme_bot - INFO - Fetched stock data for 517 symbols.
+2024-09-17 14:05:57,357 - groupme_bot - INFO - Successfully fetched data for 517 stocks.
+2024-09-17 14:05:57,357 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BRK.B, BF.B
+2024-09-17 14:05:57,574 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 14:05:57,578 - groupme_bot - ERROR - Error in format_market_summary: isinstance() arg 2 must be a type, a tuple of types, or a union
+2024-09-17 14:05:57,578 - groupme_bot - ERROR - Economic calendar shape: (17, 4)
+2024-09-17 14:05:57,578 - groupme_bot - ERROR - Economic calendar columns: Index(['Release Date', 'Release Time (ET)', 'Release Name', 'Impact'], dtype='object')
+2024-09-17 14:05:57,579 - groupme_bot - ERROR - Sample of economic calendar:
+  Release Date Release Time (ET)            Release Name                  Impact
+0   2024-09-17          08:30:00  Core Retail Sales m\/m    High Impact Expected
+1   2024-09-17          08:30:00       Retail Sales m\/m    High Impact Expected
+2   2024-09-18          08:30:00        Building Permits  Medium Impact Expected
+3   2024-09-18          10:30:00   Crude Oil Inventories  Medium Impact Expected
+4   2024-09-18          14:00:00      Federal Funds Rate    High Impact Expected
+2024-09-17 14:05:57,579 - groupme_bot - ERROR - Error generating market summary: isinstance() arg 2 must be a type, a tuple of types, or a union
+2024-09-17 14:06:03,818 - groupme_bot - INFO - Fetched 519 S&P 500 symbols.
+2024-09-17 14:06:03,823 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 14:06:06,486 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 14:06:08,662 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 14:06:12,975 - groupme_bot - INFO - Fetched stock data for 517 symbols.
+2024-09-17 14:06:12,975 - groupme_bot - INFO - Successfully fetched data for 517 stocks.
+2024-09-17 14:06:12,975 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BRK.B, BF.B
+2024-09-17 14:06:13,140 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 14:06:13,146 - groupme_bot - ERROR - Error generating market summary: strptime() argument 1 must be str, not datetime.time
+2024-09-17 14:06:21,603 - groupme_bot - INFO - Fetched 519 S&P 500 symbols.
+2024-09-17 14:06:21,607 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 14:06:24,298 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 14:06:26,354 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 14:06:31,061 - groupme_bot - INFO - Fetched stock data for 517 symbols.
+2024-09-17 14:06:31,061 - groupme_bot - INFO - Successfully fetched data for 517 stocks.
+2024-09-17 14:06:31,061 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BRK.B, BF.B
+2024-09-17 14:06:31,413 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 14:10:50,119 - groupme_bot - INFO - Fetched 519 S&P 500 symbols.
+2024-09-17 14:10:50,123 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 14:10:53,103 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 14:10:55,122 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 14:11:01,662 - groupme_bot - INFO - Fetched stock data for 517 symbols.
+2024-09-17 14:11:01,663 - groupme_bot - INFO - Successfully fetched data for 517 stocks.
+2024-09-17 14:11:01,663 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BRK.B, BF.B
+2024-09-17 14:11:02,089 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 14:13:09,149 - groupme_bot - INFO - Fetched 519 S&P 500 symbols.
+2024-09-17 14:13:09,156 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 14:13:12,291 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 14:13:14,213 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 14:13:18,352 - groupme_bot - INFO - Fetched stock data for 517 symbols.
+2024-09-17 14:13:18,352 - groupme_bot - INFO - Successfully fetched data for 517 stocks.
+2024-09-17 14:13:18,352 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BRK.B, BF.B
+2024-09-17 14:13:19,021 - groupme_bot - INFO - Fetched 5 top news articles.
+2024-09-17 14:14:47,287 - groupme_bot - INFO - Attempting to generate image with prompt: A futuristic city skyline
+2024-09-17 14:15:01,202 - groupme_bot - INFO - Image generated successfully: https://oaidalleapiprodscus.blob.core.windows.net/private/org-nkLKrqqG87GQ8w0ZEt7uv8wo/user-nIAGZtZJ3tVjyz1sH7STnCfA/img-L9pQ0o2haOxBq5hna5qwQZQj.png?st=2024-09-17T17%3A15%3A01Z&se=2024-09-17T19%3A15%3A01Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-09-16T23%3A10%3A00Z&ske=2024-09-17T23%3A10%3A00Z&sks=b&skv=2024-08-04&sig=ymsvZf8kJMnCBpkep6hquQY/dkcjF6k1rCz/HuoPSLU%3D
+2024-09-17 14:15:11,369 - groupme_bot - INFO - Web search results: - AI for everything: 10 Breakthrough Technologies 2024: 10 Breakthrough Technologies
+by Will Douglas Heaven
+Share
+Popular
+Deep Dive
+Artificial intelligence
+Google DeepMind used a large language model to solve an unsolved math problem
+They had to throw away...
+- AI now beats humans at basic tasks — new benchmarks are ... - Nature: This year, Rein says, Claude 3 — the latest chatbot released by AI company Anthropic, based in San Francisco, California — scored about 60%. "The rate of progress is pretty shocking to a lot ......
+- The Top Artificial Intelligence Trends | IBM: Here are some important current AI trends to look out for in the coming year. Reality check: more realistic expectations. Multimodal AI. Small (er) language models and open source advancements. GPU sh...
+2024-09-17 14:21:35,837 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 14:21:37,831 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 14:21:42,009 - groupme_bot - INFO - Fetched stock data for 517 symbols.
+2024-09-17 14:21:57,943 - groupme_bot - INFO - Fetched 519 S&P 500 symbols.
+2024-09-17 14:21:57,945 - groupme_bot - INFO - Fetched economic calendar with 17 events.
+2024-09-17 14:21:59,092 - groupme_bot - WARNING - Not enough data for symbol: BRK.B
+2024-09-17 14:22:01,360 - groupme_bot - WARNING - Not enough data for symbol: BF.B
+2024-09-17 14:22:05,690 - groupme_bot - INFO - Fetched stock data for 517 symbols.
+2024-09-17 14:22:05,691 - groupme_bot - INFO - Successfully fetched data for 517 stocks.
+2024-09-17 14:22:05,691 - groupme_bot - WARNING - Failed to fetch data for 2 symbols: BRK.B, BF.B
+2024-09-17 14:22:05,903 - groupme_bot - INFO - Fetched 5 top news articles.

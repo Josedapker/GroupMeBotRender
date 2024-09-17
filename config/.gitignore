@@ -9,6 +9,9 @@ env/
 # Python bytecode
 __pycache__/
 *.py[cod]
+*.pyc
+*.pyo
+*.pyd
 
 # Logs
 *.log

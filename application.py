@@ -42,13 +42,14 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Define paths to local files
 ECONOMIC_CALENDAR_FILE = os.path.join(BASE_DIR, "usd_us_events.json")
-TOP_COMPANIES_FILE = os.path.join(BASE_DIR, "top100_companies.txt")
+TOP_COMPANIES_FILE = os.path.join(BASE_DIR, "data", "input", "sp500_stocks.txt")
+OUTPUT_DIR = os.path.join(BASE_DIR, 'data', 'output')
 
 print(f"Economic Calendar File Path: {ECONOMIC_CALENDAR_FILE}")  # Debug statement
 print(f"Top Companies File Path: {TOP_COMPANIES_FILE}")          # Debug statement
 
 # Configuration settings - Removed from ENV and set as constants
-LOG_FILE_PATH = "groupme_bot.log"
+LOG_FILE_PATH = os.path.join(BASE_DIR, "logs", "groupme_bot.log")
 LOG_LEVEL = "INFO"
 RATE_LIMIT_PER_MINUTE = 50
 RATE_LIMIT_PER_HOUR = 500
@@ -192,54 +193,18 @@ async def upload_image_to_groupme(image_url: str) -> Union[str, None]:
 async def send_message(bot_id: str, text: str, image_url: Union[str, None] = None) -> None:
     url = "https://api.groupme.com/v3/bots/post"
 
-    attachment = []
-    if image_url:
-        print(f"Attempting to upload image: {image_url}")
-        groupme_image_url = await upload_image_to_groupme(image_url)
-        if groupme_image_url:
-            print(f"Image uploaded successfully to GroupMe: {groupme_image_url}")
-            attachment = [{"type": "image", "url": groupme_image_url}]
-        else:
-            print("Failed to upload image, sending message without image.")
+    data = {
+        "bot_id": bot_id,
+        "text": text,
+        "attachments": []
+    }
 
-    message_parts = split_message(text)
+    if image_url:
+        data["attachments"].append({"type": "image", "url": image_url})
 
     async with httpx.AsyncClient() as client:
-        for i, part in enumerate(message_parts):
-            escaped_part = html.escape(part)  # Escape special characters
-            data = {
-                "bot_id": bot_id,
-                "text": escaped_part,
-            }
-            if i == 0 and attachment:
-                data["attachments"] = attachment
-
-            retry_count = 0
-            max_retries = 3
-            while retry_count < max_retries:
-                try:
-                    response = await client.post(url, json=data)
-                    response.raise_for_status()
-                    print(f"Message part {i+1} sent successfully!")
-                    break  # Exit the retry loop if successful
-                except httpx.RequestError as e:
-                    print(f"Error sending message part {i+1}: {str(e)}")
-                    logger.error(f"Full error details: {e.request.url}, {e.request.headers}, {e.request.content}")
-                    if 'response' in locals():
-                        logger.error(f"Response content: {response.content}")
-                    retry_count += 1
-                    if retry_count < max_retries:
-                        await asyncio.sleep(1)  # Wait before retrying
-                except Exception as e:
-                    logger.error(f"Unexpected error in send_message: {str(e)}")
-                    logger.error(traceback.format_exc())
-                    break  # Exit the retry loop for unexpected errors
-
-            # Wait between message parts, with a longer delay after the first part
-            if i == 0:
-                await asyncio.sleep(2)  # Longer delay after the first part
-            elif i < len(message_parts) - 1:
-                await asyncio.sleep(1)  # Shorter delay between subsequent parts
+        response = await client.post(url, json=data)
+        response.raise_for_status()
 
 def get_help_message() -> str:
     help_message = """
@@ -254,6 +219,7 @@ def get_help_message() -> str:
 • !calendar - Get the economic calendar
 • !stocks - Get the top stocks summary
 • !news - Get the top business news
+• !earnings - Get earnings calendar for this week and next week
 
 Test Endpoints:
 • /test_help - Test the help message
@@ -265,6 +231,7 @@ Test Endpoints:
 • /test_calendar - Test the economic calendar
 • /test_stocks - Test the top stocks summary
 • /test_news - Test the top business news
+• /test_earnings - Test the earnings calendar
 
 For any issues or feature requests, please contact the bot administrator.
 """
@@ -287,9 +254,9 @@ def get_event_emoji(event_name):
         return '📊'
     elif 'unemployment' in event_name:
         return '👥'
-    elif 'inflation' in event_name or 'cpi' in event_name:
+    elif 'inflation' in event_name or 'cpi' in event_name or 'pce' in event_name:
         return '💹'
-    elif 'interest rate' in event_name:
+    elif 'interest rate' in event_name or 'fed' in event_name:
         return '🏦'
     elif 'manufacturing' in event_name:
         return '🏭'
@@ -408,54 +375,25 @@ def get_top_news() -> List[Dict]:
         logger.error(f"Error fetching top news: {str(e)}")
         return []
 
-def format_market_summary(economic_calendar: pd.DataFrame, top_stocks: pd.DataFrame, top_news: List[Dict]) -> str:
-    output = "📊 MARKET SUMMARY 📊\n\n"
-
-    # Economic Calendar
-    output += "📅 ECONOMIC CALENDAR 📅\n"
-    if not economic_calendar.empty:
-        economic_calendar['Release Date'] = pd.to_datetime(economic_calendar['Release Date'])
-        events_by_day = economic_calendar.groupby('Release Date')
-        for date, group in events_by_day:
-            day_of_week = date.strftime('%A')
-            output += f"--- {date.strftime('%Y-%m-%d')} ({day_of_week}) ---\n"
-            
-            # Group events by time and impact
-            events_by_time_impact = group.groupby(['Release Time (ET)', 'Impact'])
-            for (time, impact), subgroup in events_by_time_impact:
-                impact_emoji = get_impact_emoji(impact)
-                event_names = [get_event_emoji(row['Release Name']) + ' ' + row['Release Name'] for _, row in subgroup.iterrows()]
-                consolidated_events = ', '.join(event_names)
-                output += f"{impact_emoji}{consolidated_events} ({time})\n"
-            output += "\n"
-    else:
-        output += "No economic events available.\n\n"
-
-    # Top Stocks
-    output += "📈 TOP STOCKS 📈\n"
-    if not top_stocks.empty:
-        categories = [
-            ("TOP GAINERS", top_stocks.nlargest(5, 'Percent Change')),
-            ("TOP LOSERS", top_stocks.nsmallest(5, 'Percent Change')),
-            ("HIGHEST VOLUME", top_stocks.nlargest(5, 'Volume'))
-        ]
-        for title, df in categories:
-            output += f"--- {title} ---\n"
-            for _, row in df.iterrows():
-                output += f"{row['Symbol']}: {row['Percent Change']:.2f}% ({int(row['Volume']):,})\n"
-            output += "\n"
-    else:
-        output += "No stock data available.\n\n"
-
-    # Top News
-    output += "📰 TOP NEWS 📰\n"
-    if top_news:
-        for i, article in enumerate(top_news[:5], 1):
-            output += f"{i}. {article['title']}\n   {article['url']}\n\n"
-    else:
-        output += "No news articles available.\n"
-
-    return output
+def get_earnings_data():
+    this_week_file = os.path.join(OUTPUT_DIR, 'earnings_this_week.txt')
+    next_week_file = os.path.join(OUTPUT_DIR, 'earnings_next_week.txt')
+    
+    earnings_data = "📅 EARNINGS CALENDAR 📅\n\n"
+    
+    for file_path, week in [(this_week_file, "This Week"), (next_week_file, "Next Week")]:
+        earnings_data += f"--- {week} ---\n"
+        if os.path.exists(file_path):
+            with open(file_path, 'r') as file:
+                content = file.read().strip()
+                if content:
+                    earnings_data += content + "\n\n"
+                else:
+                    earnings_data += "No earnings data available.\n\n"
+        else:
+            earnings_data += f"Earnings data file not found for {week}.\n\n"
+    
+    return earnings_data.strip()
 
 def generate_market_summary() -> str:
     # Define date range for the week
@@ -485,9 +423,135 @@ def generate_market_summary() -> str:
     top_news = get_top_news()
     logger.info(f"Fetched {len(top_news)} top news articles.")
 
+    # Fetch earnings data
+    earnings_data = get_earnings_data()
+
     # Format and return the market summary
-    market_summary = format_market_summary(economic_calendar, top_stocks_df, top_news)
+    market_summary = format_market_summary(economic_calendar, top_stocks_df, top_news, earnings_data)
     return market_summary
+
+def shorten_url(url):
+    domain = re.search(r'https?://(?:www\.)?([\w\-]+)\.', url)
+    return domain.group(1) if domain else 'link'
+
+def parse_time(time_str):
+    try:
+        return datetime.strptime(time_str, '%I:%M %p').time()
+    except ValueError:
+        try:
+            return datetime.strptime(time_str, '%H:%M').time()
+        except ValueError:
+            return None
+
+def format_market_summary(economic_calendar: pd.DataFrame, top_stocks: pd.DataFrame, top_news: List[Dict], earnings_data: str) -> str:
+    output = "📊 MARKET SUMMARY 📊\n\n"
+
+    # Process economic calendar
+    economic_calendar['Release Date'] = pd.to_datetime(economic_calendar['Release Date'])
+    economic_calendar['Release Time (ET)'] = economic_calendar['Release Time (ET)'].apply(parse_time)
+    economic_calendar = economic_calendar.sort_values(['Release Date', 'Release Time (ET)'])
+
+    # Helper function to abbreviate day names
+    def abbreviate_day(day_name):
+        return day_name[:3]
+
+    # Process earnings data
+    earnings_dict = {}
+    for line in earnings_data.split('\n'):
+        if ':' in line:
+            ticker, date_time = line.split(':', 1)
+            date, time = date_time.strip().split(' ', 1)
+            # Remove any day of the week information
+            time = re.sub(r'\([A-Za-z]+\)\s*-?\s*', '', time).strip()
+            earnings_dict[date] = earnings_dict.get(date, []) + [(ticker.strip(), time)]
+
+    # Combine and display this week's events
+    current_date = datetime.now().date()
+    end_of_week = current_date + timedelta(days=(6 - current_date.weekday()))
+    
+    for date in pd.date_range(current_date, end_of_week):
+        date_str = date.strftime('%m/%d (%a)')
+        day_events = economic_calendar[economic_calendar['Release Date'].dt.date == date.date()]
+        day_earnings = earnings_dict.get(date.strftime('%Y-%m-%d'), [])
+        
+        if not day_events.empty or day_earnings:
+            output += f"{date_str}:\n"
+            
+            # Group events by time
+            events_by_time = day_events.groupby('Release Time (ET)')
+            for time, group in events_by_time:
+                events = []
+                impact_emoji = get_impact_emoji(group['Impact'].iloc[0])  # Use the impact of the first event in the group
+                for _, event in group.iterrows():
+                    event_name = get_event_emoji(event['Release Name']) + event['Release Name'].split()[0]
+                    events.append(event_name)
+                time_str = time.strftime('%I:%M %p') if time else 'N/A'
+                output += f"  {impact_emoji}{', '.join(events)} ({time_str})\n"
+            
+            if day_earnings:
+                earnings_str = ", ".join([f"📅 ${ticker}: {time}" for ticker, time in day_earnings])
+                output += f"  {earnings_str}\n"
+            
+            output += "\n"
+
+    # Next Week's Events
+    output += "--- NEXT WEEK ---\n"
+    next_week_start = end_of_week + timedelta(days=1)
+    next_week_end = next_week_start + timedelta(days=6)
+    
+    for date in pd.date_range(next_week_start, next_week_end):
+        date_str = date.strftime('%m/%d (%a)')
+        day_events = economic_calendar[economic_calendar['Release Date'].dt.date == date.date()]
+        day_earnings = earnings_dict.get(date.strftime('%Y-%m-%d'), [])
+        
+        if not day_events.empty or day_earnings:
+            output += f"{date_str}:\n"
+            
+            # Group events by time
+            events_by_time = day_events.groupby('Release Time (ET)')
+            for time, group in events_by_time:
+                events = []
+                impact_emoji = get_impact_emoji(group['Impact'].iloc[0])  # Use the impact of the first event in the group
+                for _, event in group.iterrows():
+                    event_name = get_event_emoji(event['Release Name']) + event['Release Name'].split()[0]
+                    events.append(event_name)
+                time_str = time.strftime('%I:%M %p') if time else 'N/A'
+                output += f"  {impact_emoji}{', '.join(events)} ({time_str})\n"
+            
+            if day_earnings:
+                earnings_str = ", ".join([f"📅 ${ticker}: {time}" for ticker, time in day_earnings])
+                output += f"  {earnings_str}\n"
+            
+            output += "\n"
+
+    # Top Stocks
+    output += "📈 TOP STOCKS\n"
+    if not top_stocks.empty:
+        categories = [
+            ("Gainers", top_stocks.nlargest(5, 'Percent Change')),
+            ("Losers", top_stocks.nsmallest(5, 'Percent Change')),
+            ("Volume", top_stocks.nlargest(5, 'Volume'))
+        ]
+        for title, df in categories:
+            stocks = [f"${row['Symbol']} {row['Percent Change']:.2f}%" for _, row in df.iterrows()]
+            output += f"{title}: {', '.join(stocks)}\n"
+    else:
+        output += "No stock data available.\n"
+    output += "\n"
+
+    # Top News
+    output += "📰 TOP NEWS\n"
+    if top_news:
+        for i, article in enumerate(top_news[:5], 1):
+            title = article['title'][:50] + '...' if len(article['title']) > 50 else article['title']
+            short_url = shorten_url(article['url'])
+            escaped_title = html.escape(title)
+            link = f'<a href="{article["url"]}">{short_url}</a>'
+            output += f"{i}. {escaped_title} {link}\n"
+    else:
+        output += "No news articles available.\n"
+
+    return output
 
 def generate_economic_calendar() -> str:
     today = datetime.today()
@@ -528,7 +592,7 @@ def generate_top_stocks() -> str:
         for title, df in categories:
             output += f"--- {title} ---\n"
             for _, row in df.iterrows():
-                output += f"{row['Symbol']}: {row['Percent Change']:.2f}% ({int(row['Volume']):,})\n"
+                output += f"${row['Symbol']}: {row['Percent Change']:.2f}% ({int(row['Volume']):,})\n"
             output += "\n"
     else:
         output += "No stock data available.\n"
@@ -544,7 +608,6 @@ def generate_top_news() -> str:
     else:
         output += "No news articles available.\n"
     return output
-
 
 # --------------------------- End of Market Summary Integration ---------------------------
 
@@ -684,85 +747,47 @@ async def generate_ai_response(prompt: str, model: str = "gpt-3.5-turbo", use_we
 
 # Webhook route
 @application.route('/', methods=['POST'])
-@limiter.limit(
-    f"{RATE_LIMIT_PER_MINUTE} per minute; {RATE_LIMIT_PER_HOUR} per hour; {RATE_LIMIT_PER_DAY} per day",
-    key_func=get_remote_address
-)
+@limiter.limit(f"{RATE_LIMIT_PER_MINUTE} per minute; {RATE_LIMIT_PER_HOUR} per hour; {RATE_LIMIT_PER_DAY} per day")
 async def webhook():
-    try:
-        data = request.get_json(force=True)
-        logger.info(f"Received message: {json.dumps(data)}")
+    data = request.get_json()
+    
+    if data['name'] != 'GroupMe':  # This line filters out non-user messages
+        message = data['text'].lower().strip()
         
-        # Ignore messages sent by bots (including itself)
-        if data.get('sender_type') == 'bot':
-            logger.debug("Message sent by bot; ignoring.")
-            return jsonify(success=True), 200
+        if message == '!help':
+            response = get_help_message()
+        elif message == '!usage':
+            response = await get_openai_usage()
+        elif message.startswith('!ai '):
+            prompt = message[4:].strip()
+            response = await generate_ai_response(prompt, "gpt-3.5-turbo", False)
+        elif message.startswith('!ai4 '):
+            prompt = message[5:].strip()
+            response = await generate_ai_response(prompt, "gpt-4", True)
+        elif message.startswith('!image '):
+            prompt = message[7:].strip()
+            image_url = await generate_image(prompt)
+            if image_url:
+                await send_message(BOT_ID, f"Image generated for: {prompt}", image_url)
+            else:
+                await send_message(BOT_ID, "Failed to generate image.")
+            return jsonify({"success": True}), 200
+        elif message == '!market':
+            response = generate_market_summary()
+        elif message == '!calendar':
+            response = generate_economic_calendar()
+        elif message == '!stocks':
+            response = generate_top_stocks()
+        elif message == '!news':
+            response = generate_top_news()
+        elif message == '!earnings':
+            response = get_earnings_data()
+        else:
+            return jsonify({"success": True}), 200
         
-        # Process messages from users
-        message = html.unescape(data.get('text', ''))
-        logger.info(f"Processed message: {message}")
-
-        if message.lower().startswith('!help'):
-            await send_message(BOT_ID, get_help_message())
-        elif message.lower().startswith('!usage'):
-            usage_info = await get_openai_usage()
-            await send_message(BOT_ID, usage_info)
-        elif message.lower().startswith('!ai4'):
-            prompt = validate_prompt(message[5:].strip())
-            if prompt:
-                logger.info(f"Generating AI4 response for prompt: '{prompt}'")
-                response = await generate_ai_response(prompt, "gpt-4", True)
-                logger.info(f"AI4 response generated: {response}")
-                await send_message(BOT_ID, response)
-            else:
-                await send_message(BOT_ID, "Please provide a valid prompt.")
-        elif message.lower().startswith('!ai'):
-            prompt = validate_prompt(message[4:].strip())
-            if prompt:
-                logger.info(f"Generating AI response for prompt: '{prompt}'")
-                response = await generate_ai_response(prompt, "gpt-3.5-turbo", False)
-                logger.info(f"AI response generated: {response}")
-                await send_message(BOT_ID, response)
-            else:
-                await send_message(BOT_ID, "Please provide a valid prompt.")
-        elif message.lower().startswith('!image'):
-            prompt = validate_prompt(message[7:].strip())
-            if prompt:
-                logger.info(f"Generating image for prompt: '{prompt}'")
-                image_url = await generate_image(prompt)
-                if image_url:
-                    logger.info(f"Image generated successfully: {image_url}")
-                    await send_message(BOT_ID, f"Here's your image for '{prompt}'", image_url)
-                    logger.info("Message with image sent to GroupMe")
-                else:
-                    logger.error(f"Failed to generate image for '{prompt}'")
-                    await send_message(BOT_ID, f"Sorry, I couldn't generate an image for '{prompt}'")
-            else:
-                logger.warning("Invalid prompt for image generation")
-                await send_message(BOT_ID, "Please provide a valid prompt for image generation.")
-        elif message.lower().startswith('!market'):
-            logger.info("Processing !market command")
-            market_summary = generate_market_summary()
-            await send_message(BOT_ID, market_summary)
-        elif message.lower().startswith('!calendar'):
-            calendar = generate_economic_calendar()
-            await send_message(BOT_ID, calendar)
-        elif message.lower().startswith('!stocks'):
-            stocks = generate_top_stocks()
-            await send_message(BOT_ID, stocks)
-        elif message.lower().startswith('!news'):
-            news = generate_top_news()
-            await send_message(BOT_ID, news)
-        
-        return jsonify(success=True), 200
-
-    except json.JSONDecodeError:
-        logger.error("Failed to parse JSON from request")
-        return jsonify(success=False, error="Invalid JSON"), 400
-    except Exception as e:
-        logger.error(f"Unexpected error in webhook: {str(e)}")
-        logger.error(traceback.format_exc())
-        return jsonify(success=False, error="Internal server error"), 500
+        await send_message(BOT_ID, response)
+    
+    return jsonify({"success": True}), 200
 
 # Error handler for rate limiting
 @application.errorhandler(RateLimitExceeded)
@@ -816,10 +841,14 @@ async def test_calendar():
     calendar = generate_economic_calendar()
     return f"<pre>{calendar}</pre>", 200, {'Content-Type': 'text/html; charset=utf-8'}
 
-@application.route('/test_stocks', methods=['GET'])
-async def test_stocks():
-    stocks = generate_top_stocks()
-    return f"<pre>{stocks}</pre>", 200, {'Content-Type': 'text/html; charset=utf-8'}
+@application.route('/test_earnings', methods=['GET'])
+async def test_earnings():
+    earnings_data = get_earnings_data()
+    return f"<pre>{earnings_data}</pre>", 200, {'Content-Type': 'text/html; charset=utf-8'}
+
+if __name__ == "__main__":
+    print("Starting Flask development server...")
+    application.run(debug=True, host='0.0.0.0', port=5001)
 
 
 

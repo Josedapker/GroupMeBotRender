@@ -1,0 +1,5 @@
+FDX: 2024-09-19 (Thursday) - After Close
+LEN: 2024-09-19 (Thursday) - After Close
+GIS: 2024-09-18 (Wednesday) - Before Open
+DRI: 2024-09-19 (Thursday) - Before Open
+FDS: 2024-09-19 (Thursday) - Before Open

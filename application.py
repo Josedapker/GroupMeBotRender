@@ -250,7 +250,10 @@ def get_help_message() -> str:
 • !ai [prompt] - Generate a response using GPT-3.5 (default AI model)
 • !ai4 [prompt] - Generate a response using GPT-4 with web search
 • !image [prompt] - Generate an image using DALL-E
-• !market - Get the latest market summary including economic calendar, top stocks, and news
+• !market - Get the full market summary
+• !calendar - Get the economic calendar
+• !stocks - Get the top stocks summary
+• !news - Get the top business news
 
 For any issues or feature requests, please contact the bot administrator.
 """
@@ -470,6 +473,58 @@ def generate_market_summary() -> str:
     market_summary = format_market_summary(economic_calendar, top_stocks_df, top_news)
     return market_summary
 
+def generate_economic_calendar() -> str:
+    today = datetime.today()
+    start_date = today.strftime('%Y-%m-%d')
+    end_date = (today + timedelta(days=7)).strftime('%Y-%m-%d')
+    economic_calendar = get_economic_calendar(start_date, end_date)
+    
+    output = "📅 ECONOMIC CALENDAR 📅\n\n"
+    if not economic_calendar.empty:
+        events_by_day = economic_calendar.groupby('Release Date')
+        for date, group in events_by_day:
+            output += f"--- {date.strftime('%Y-%m-%d')} ---\n"
+            for _, row in group.iterrows():
+                impact_emoji = get_impact_emoji(row['Impact'])
+                event_emoji = get_event_emoji(row['Release Name'])
+                output += f"{impact_emoji}{event_emoji} {row['Release Name']} ({row['Release Time (ET)']}) - {row['Impact']} Impact\n"
+            output += "\n"
+    else:
+        output += "No economic events available.\n"
+    return output
+
+def generate_top_stocks() -> str:
+    all_symbols = get_sp500_symbols()
+    top_stocks_df, failed_symbols = get_top_stocks(all_symbols)
+    
+    output = "📈 TOP STOCKS 📈\n\n"
+    if not top_stocks_df.empty:
+        categories = [
+            ("TOP GAINERS", top_stocks_df.nlargest(5, 'Percent Change')),
+            ("TOP LOSERS", top_stocks_df.nsmallest(5, 'Percent Change')),
+            ("HIGHEST VOLUME", top_stocks_df.nlargest(5, 'Volume'))
+        ]
+        for title, df in categories:
+            output += f"--- {title} ---\n"
+            for _, row in df.iterrows():
+                output += f"{row['Symbol']}: {row['Percent Change']:.2f}% ({int(row['Volume']):,})\n"
+            output += "\n"
+    else:
+        output += "No stock data available.\n"
+    return output
+
+def generate_top_news() -> str:
+    top_news = get_top_news()
+    
+    output = "📰 TOP NEWS 📰\n\n"
+    if top_news:
+        for i, article in enumerate(top_news[:5], 1):
+            output += f"{i}. {article['title']}\n   {article['url']}\n\n"
+    else:
+        output += "No news articles available.\n"
+    return output
+
+
 # --------------------------- End of Market Summary Integration ---------------------------
 
 # Original bot functions
@@ -668,6 +723,15 @@ async def webhook():
             logger.info("Processing !market command")
             market_summary = generate_market_summary()
             await send_message(BOT_ID, market_summary)
+        elif message.lower().startswith('!calendar'):
+            calendar = generate_economic_calendar()
+            await send_message(BOT_ID, calendar)
+        elif message.lower().startswith('!stocks'):
+            stocks = generate_top_stocks()
+            await send_message(BOT_ID, stocks)
+        elif message.lower().startswith('!news'):
+            news = generate_top_news()
+            await send_message(BOT_ID, news)
         
         return jsonify(success=True), 200
 
@@ -716,7 +780,6 @@ async def test_image():
     else:
         return f"<pre>Failed to generate image for prompt: '{prompt}'</pre>", 200, {'Content-Type': 'text/html; charset=utf-8'}
 
-# Keep your existing test_market_summary route
 @application.route('/test_market_summary', methods=['GET'])
 async def test_market_summary():
     try:
@@ -726,6 +789,36 @@ async def test_market_summary():
     except Exception as e:
         logger.error(f"Error generating market summary: {str(e)}")
         return jsonify({"error": "Internal server error"}), 500
+
+@application.route('/test_calendar', methods=['GET'])
+async def test_calendar():
+    calendar = generate_economic_calendar()
+    return f"<pre>{calendar}</pre>", 200, {'Content-Type': 'text/html; charset=utf-8'}
+
+@application.route('/test_stocks', methods=['GET'])
+async def test_stocks():
+    stocks = generate_top_stocks()
+    return f"<pre>{stocks}</pre>", 200, {'Content-Type': 'text/html; charset=utf-8'}
+
+@application.route('/test_news', methods=['GET'])
+async def test_news():
+    news = generate_top_news()
+    return f"<pre>{news}</pre>", 200, {'Content-Type': 'text/html; charset=utf-8'}
+
+@application.route('/test_calendar', methods=['GET'])
+async def test_calendar():
+    calendar = generate_economic_calendar()
+    return f"<pre>{calendar}</pre>", 200, {'Content-Type': 'text/html; charset=utf-8'}
+
+@application.route('/test_stocks', methods=['GET'])
+async def test_stocks():
+    stocks = generate_top_stocks()
+    return f"<pre>{stocks}</pre>", 200, {'Content-Type': 'text/html; charset=utf-8'}
+
+@application.route('/test_news', methods=['GET'])
+async def test_news():
+    news = generate_top_news()
+    return f"<pre>{news}</pre>", 200, {'Content-Type': 'text/html; charset=utf-8'}
 
 if __name__ == "__main__":
     config = Config()

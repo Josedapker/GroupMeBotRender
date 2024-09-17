@@ -417,11 +417,16 @@ def format_market_summary(economic_calendar: pd.DataFrame, top_stocks: pd.DataFr
         economic_calendar['Release Date'] = pd.to_datetime(economic_calendar['Release Date'])
         events_by_day = economic_calendar.groupby('Release Date')
         for date, group in events_by_day:
-            output += f"--- {date.strftime('%Y-%m-%d')} ---\n"
-            for _, row in group.iterrows():
-                impact_emoji = get_impact_emoji(row['Impact'])
-                event_emoji = get_event_emoji(row['Release Name'])
-                output += f"{impact_emoji}{event_emoji} {row['Release Name']} ({row['Release Time (ET)']}) - {row['Impact']} Impact\n"
+            day_of_week = date.strftime('%A')
+            output += f"--- {date.strftime('%Y-%m-%d')} ({day_of_week}) ---\n"
+            
+            # Group events by time and impact
+            events_by_time_impact = group.groupby(['Release Time (ET)', 'Impact'])
+            for (time, impact), subgroup in events_by_time_impact:
+                impact_emoji = get_impact_emoji(impact)
+                event_names = [get_event_emoji(row['Release Name']) + ' ' + row['Release Name'] for _, row in subgroup.iterrows()]
+                consolidated_events = ', '.join(event_names)
+                output += f"{impact_emoji}{consolidated_events} ({time})\n"
             output += "\n"
     else:
         output += "No economic events available.\n\n"
@@ -494,11 +499,16 @@ def generate_economic_calendar() -> str:
     if not economic_calendar.empty:
         events_by_day = economic_calendar.groupby('Release Date')
         for date, group in events_by_day:
-            output += f"--- {date.strftime('%Y-%m-%d')} ---\n"
-            for _, row in group.iterrows():
-                impact_emoji = get_impact_emoji(row['Impact'])
-                event_emoji = get_event_emoji(row['Release Name'])
-                output += f"{impact_emoji}{event_emoji} {row['Release Name']} ({row['Release Time (ET)']}) - {row['Impact']} Impact\n"
+            day_of_week = date.strftime('%A')
+            output += f"--- {date.strftime('%Y-%m-%d')} ({day_of_week}) ---\n"
+            
+            # Group events by time and impact
+            events_by_time_impact = group.groupby(['Release Time (ET)', 'Impact'])
+            for (time, impact), subgroup in events_by_time_impact:
+                impact_emoji = get_impact_emoji(impact)
+                event_names = [get_event_emoji(row['Release Name']) + ' ' + row['Release Name'] for _, row in subgroup.iterrows()]
+                consolidated_events = ', '.join(event_names)
+                output += f"{impact_emoji}{consolidated_events} ({time})\n"
             output += "\n"
     else:
         output += "No economic events available.\n"

@@ -810,17 +810,7 @@ if __name__ == "__main__":
     config.bind = ["0.0.0.0:8000"]
     asgi_app = WsgiToAsgi(application)
     asyncio.run(serve(asgi_app, config))
-async def test_stocks():
-    stocks = generate_top_stocks()
-    return f"<pre>{stocks}</pre>", 200, {'Content-Type': 'text/html; charset=utf-8'}
 
-@application.route('/test_news', methods=['GET'])
-async def test_news():
-    news = generate_top_news()
-    return f"<pre>{news}</pre>", 200, {'Content-Type': 'text/html; charset=utf-8'}
 
-if __name__ == "__main__":
-    config = Config()
-    config.bind = ["0.0.0.0:8000"]
-    asgi_app = WsgiToAsgi(application)
-    asyncio.run(serve(asgi_app, config))
+
+

@@ -738,7 +738,7 @@ async def generate_ai_response(prompt: str, model: str = "gpt-3.5-turbo", use_we
                 {
                     "role": "system",
                     "content": (
-                        "You are an advanced AI assistant with access to recent web information. "
+                        "You are an AI assistant specialized in stocks, cryptocurrency, investing strategies, and money-making opportunities. Your role is to support and enhance discussions within a GroupMe chat focused on these topics. You have access to recent web information."
                         "Provide accurate and helpful responses based on the given web search results and your knowledge."
                     )
                 },
@@ -753,7 +753,7 @@ async def generate_ai_response(prompt: str, model: str = "gpt-3.5-turbo", use_we
             ]
         else:
             messages = [
-                {"role": "system", "content": "You are a helpful AI assistant."},
+                {"role": "system", "content": "You are an AI assistant specialized in stocks, cryptocurrency, investing strategies, and money-making opportunities. Your role is to support and enhance discussions within a GroupMe chat focused on these topics."},
                 {"role": "user", "content": prompt}
             ]
 

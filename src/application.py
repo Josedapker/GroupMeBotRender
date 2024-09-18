@@ -214,9 +214,19 @@ async def send_message(bot_id: str, text: str, image_url: Union[str, None] = Non
     if image_url:
         data["attachments"].append({"type": "image", "url": image_url})
 
-    async with httpx.AsyncClient() as client:
-        response = await client.post(url, json=data)
-        response.raise_for_status()
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.post(url, json=data)
+            response.raise_for_status()
+            logger.info(f"Message sent successfully: {text[:50]}...")
+    except httpx.HTTPStatusError as e:
+        logger.error(f"HTTP error occurred: {e.response.status_code} {e.response.reason_phrase}")
+        logger.error(f"Response content: {e.response.text}")
+        logger.error(f"Request data: {data}")
+        raise
+    except Exception as e:
+        logger.error(f"An unexpected error occurred: {str(e)}")
+        raise
 
 def get_help_message() -> str:
     help_message = """
@@ -761,45 +771,49 @@ async def generate_ai_response(prompt: str, model: str = "gpt-3.5-turbo", use_we
 @application.route('/', methods=['POST'])
 @limiter.limit(f"{RATE_LIMIT_PER_MINUTE} per minute; {RATE_LIMIT_PER_HOUR} per hour; {RATE_LIMIT_PER_DAY} per day")
 async def webhook():
-    data = request.get_json()
-    
-    if data['name'] != 'GroupMe':  # This line filters out non-user messages
-        message = data['text'].lower().strip()
+    try:
+        data = request.get_json()
         
-        if message == '!help':
-            response = get_help_message()
-        elif message == '!usage':
-            response = await get_openai_usage()
-        elif message.startswith('!ai '):
-            prompt = message[4:].strip()
-            response = await generate_ai_response(prompt, "gpt-3.5-turbo", False)
-        elif message.startswith('!ai4 '):
-            prompt = message[5:].strip()
-            response = await generate_ai_response(prompt, "gpt-4", True)
-        elif message.startswith('!image '):
-            prompt = message[7:].strip()
-            image_url = await generate_image(prompt)
-            if image_url:
-                await send_message(BOT_ID, f"Image generated for: {prompt}", image_url)
+        if data['name'] != 'GroupMe':  # This line filters out non-user messages
+            message = data['text'].lower().strip()
+            
+            if message == '!help':
+                response = get_help_message()
+            elif message == '!usage':
+                response = await get_openai_usage()
+            elif message.startswith('!ai '):
+                prompt = message[4:].strip()
+                response = await generate_ai_response(prompt, "gpt-3.5-turbo", False)
+            elif message.startswith('!ai4 '):
+                prompt = message[5:].strip()
+                response = await generate_ai_response(prompt, "gpt-4", True)
+            elif message.startswith('!image '):
+                prompt = message[7:].strip()
+                image_url = await generate_image(prompt)
+                if image_url:
+                    await send_message(BOT_ID, f"Image generated for: {prompt}", image_url)
+                else:
+                    await send_message(BOT_ID, "Failed to generate image.")
+                return jsonify({"success": True}), 200
+            elif message == '!market':
+                response = generate_market_summary()
+            elif message == '!calendar':
+                response = generate_economic_calendar()
+            elif message == '!stocks':
+                response = generate_top_stocks()
+            elif message == '!news':
+                response = generate_top_news()
+            elif message == '!earnings':
+                response = get_earnings_data()
             else:
-                await send_message(BOT_ID, "Failed to generate image.")
-            return jsonify({"success": True}), 200
-        elif message == '!market':
-            response = generate_market_summary()
-        elif message == '!calendar':
-            response = generate_economic_calendar()
-        elif message == '!stocks':
-            response = generate_top_stocks()
-        elif message == '!news':
-            response = generate_top_news()
-        elif message == '!earnings':
-            response = get_earnings_data()
-        else:
-            return jsonify({"success": True}), 200
+                return jsonify({"success": True}), 200
+            
+            await send_message(BOT_ID, response)
         
-        await send_message(BOT_ID, response)
-    
-    return jsonify({"success": True}), 200
+        return jsonify({"success": True}), 200
+    except Exception as e:
+        logger.error(f"Error in webhook: {str(e)}")
+        return jsonify({"error": "Internal server error"}), 500
 
 async def webhook():
     data = request.get_json()

@@ -205,6 +205,11 @@ async def upload_image_to_groupme(image_url: str) -> Union[str, None]:
 async def send_message(bot_id: str, text: str, image_url: Union[str, None] = None) -> None:
     url = "https://api.groupme.com/v3/bots/post"
 
+    # Truncate the message if it exceeds 1000 characters
+    if len(text) > 1000:
+        logger.warning(f"Message truncated from {len(text)} to 1000 characters.")
+        text = text[:1000]
+
     data = {
         "bot_id": bot_id,
         "text": text,

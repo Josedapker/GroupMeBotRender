@@ -738,7 +738,8 @@ async def generate_ai_response(prompt: str, model: str = "gpt-3.5-turbo", use_we
                 {
                     "role": "system",
                     "content": (
-                        "You are a highly experienced Investor AI assistant participating in a highly exclusiveGroupMe chat dedicated to stocks, cryptocurrency,and investment/money-making discussions that has access to the web`"
+                        "You are an advanced AI assistant with access to recent web information. "
+                        "Provide accurate and helpful responses based on the given web search results and your knowledge."
                     )
                 },
                 {
@@ -748,28 +749,13 @@ async def generate_ai_response(prompt: str, model: str = "gpt-3.5-turbo", use_we
                         if search_content else "No search results found."
                     )
                 },
-                {
-                    "role": "user",
-                    "content": prompt
-                }
+                {"role": "user", "content": prompt}
             ]
-
-
         else:
             messages = [
-                {
-                    "role": "system",
-                    "content": (
-                        "You are a highly experienced Investor AI assistant participating in a highly exclusiveGroupMe chat dedicated to stocks, cryptocurrency,and investment/money-making discussions"
-
-                    )
-                },
-                {
-                    "role": "user",
-                    "content": "prompt"
-                }
+                {"role": "system", "content": "You are a helpful AI assistant."},
+                {"role": "user", "content": prompt}
             ]
-
 
         logger.debug("Sending request to OpenAI API")
         response = client.chat.completions.create(

@@ -195,11 +195,8 @@ async def upload_image_to_groupme(image_url: str) -> Union[str, None]:
             response.raise_for_status()
         print("Image uploaded successfully")
         return response.json()['payload']['url']
-    except httpx.RequestError as e:
-        print(f"Failed to upload image: {str(e)}")
-        return None
     except Exception as e:
-        print(f"An unexpected error occurred: {str(e)}")
+        print(f"Failed to upload image: {str(e)}")
         return None
 
 async def send_message(bot_id: str, text: str, image_url: Union[str, None] = None) -> None:
@@ -796,7 +793,11 @@ async def webhook():
                 prompt = message[7:].strip()
                 image_url = await generate_image(prompt)
                 if image_url:
-                    await send_message(BOT_ID, f"Image generated for: {prompt}", image_url)
+                    groupme_image_url = await upload_image_to_groupme(image_url)
+                    if groupme_image_url:
+                        await send_message(BOT_ID, f"Image generated for: {prompt}", groupme_image_url)
+                    else:
+                        await send_message(BOT_ID, "Failed to upload the generated image to GroupMe.")
                 else:
                     await send_message(BOT_ID, "Failed to generate image.")
                 return jsonify({"success": True}), 200
@@ -841,7 +842,11 @@ async def webhook():
             prompt = message[7:].strip()
             image_url = await generate_image(prompt)
             if image_url:
-                await send_message(BOT_ID, f"Image generated for: {prompt}", image_url)
+                groupme_image_url = await upload_image_to_groupme(image_url)
+                if groupme_image_url:
+                    await send_message(BOT_ID, f"Image generated for: {prompt}", groupme_image_url)
+                else:
+                    await send_message(BOT_ID, "Failed to upload the generated image to GroupMe.")
             else:
                 await send_message(BOT_ID, "Failed to generate image.")
             return jsonify({"success": True}), 200

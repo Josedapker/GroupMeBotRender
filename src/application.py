@@ -30,6 +30,8 @@ import requests
 from functools import lru_cache
 import random
 import nest_asyncio
+import aiohttp
+from urllib.parse import urljoin
 
 # Apply nest_asyncio to allow nested event loops (useful for certain environments)
 nest_asyncio.apply()
@@ -769,103 +771,93 @@ async def generate_ai_response(prompt: str, model: str = "gpt-3.5-turbo", use_we
         logger.error(traceback.format_exc())
         return f"Sorry, I couldn't generate a response at this time. Error: {str(e)}"
 
-# Webhook route
+# Add these constants after the other constants
+AGENT_BASE_URL = "https://illegally-tight-fawn.ngrok-free.app"  # Your ngrok URL
+DEFAULT_AGENT = "agent"  # Default agent name if none specified
+
+# Add this new function after the other helper functions
+async def send_to_agent(message: str, user_id: str, username: str) -> str:
+    """Send message to Eliza agent and get response"""
+    try:
+        async with aiohttp.ClientSession() as session:
+            url = urljoin(AGENT_BASE_URL, f"{DEFAULT_AGENT}/message")
+            payload = {
+                "text": message,
+                "userId": user_id,
+                "userName": username
+            }
+            
+            async with session.post(url, json=payload) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    return data.get('text', 'No response from agent')
+                else:
+                    logger.error(f"Agent error: {response.status}")
+                    return "Sorry, I'm having trouble processing your request."
+
+    except Exception as e:
+        logger.error(f"Error connecting to agent: {str(e)}")
+        return "Sorry, I'm unable to connect to the agent service."
+
+# Replace the existing webhook route with this updated version
 @application.route('/', methods=['POST'])
-@limiter.limit(f"{RATE_LIMIT_PER_MINUTE} per minute; {RATE_LIMIT_PER_HOUR} per hour; {RATE_LIMIT_PER_DAY} per day")
+@limiter.limit(f"{RATE_LIMIT_PER_MINUTE} per minute")
 async def webhook():
     try:
         data = request.get_json()
         
-        if data['name'] != 'GroupMe':  # This line filters out non-user messages
+        if data['name'] != 'GroupMe':  # Filter out bot messages
             message = data['text'].lower().strip()
+            user_id = data.get('user_id', 'unknown')
+            username = data.get('name', 'unknown')
             
-            if message == '!help':
-                response = get_help_message()
-            elif message == '!usage':
-                response = await get_openai_usage()
-            elif message.startswith('!ai '):
-                prompt = message[4:].strip()
-                response = await generate_ai_response(prompt, "gpt-3.5-turbo", False)
-            elif message.startswith('!ai4 '):
-                prompt = message[5:].strip()
-                response = await generate_ai_response(prompt, "gpt-4", True)
-            elif message.startswith('!image '):
-                prompt = message[7:].strip()
-                image_url = await generate_image(prompt)
-                if image_url:
-                    groupme_image_url = await upload_image_to_groupme(image_url)
-                    if groupme_image_url:
-                        await send_message(BOT_ID, f"Image generated for: {prompt}", groupme_image_url)
+            # Handle special commands
+            if message.startswith('!'):
+                if message == '!help':
+                    response = get_help_message()
+                elif message == '!usage':
+                    response = await get_openai_usage()
+                elif message.startswith('!ai '):
+                    prompt = message[4:].strip()
+                    response = await generate_ai_response(prompt, "gpt-3.5-turbo", False)
+                elif message.startswith('!ai4 '):
+                    prompt = message[5:].strip()
+                    response = await generate_ai_response(prompt, "gpt-4", True)
+                elif message.startswith('!image '):
+                    prompt = message[7:].strip()
+                    image_url = await generate_image(prompt)
+                    if image_url:
+                        groupme_image_url = await upload_image_to_groupme(image_url)
+                        if groupme_image_url:
+                            await send_message(BOT_ID, f"Image generated for: {prompt}", groupme_image_url)
+                        else:
+                            await send_message(BOT_ID, "Failed to upload the generated image to GroupMe.")
                     else:
-                        await send_message(BOT_ID, "Failed to upload the generated image to GroupMe.")
+                        await send_message(BOT_ID, "Failed to generate image.")
+                    return jsonify({"success": True}), 200
+                elif message == '!market':
+                    response = generate_market_summary()
+                elif message == '!calendar':
+                    response = generate_economic_calendar()
+                elif message == '!stocks':
+                    response = generate_top_stocks()
+                elif message == '!news':
+                    response = generate_top_news()
+                elif message == '!earnings':
+                    response = get_earnings_data()
                 else:
-                    await send_message(BOT_ID, "Failed to generate image.")
-                return jsonify({"success": True}), 200
-            elif message == '!market':
-                response = generate_market_summary()
-            elif message == '!calendar':
-                response = generate_economic_calendar()
-            elif message == '!stocks':
-                response = generate_top_stocks()
-            elif message == '!news':
-                response = generate_top_news()
-            elif message == '!earnings':
-                response = get_earnings_data()
+                    return jsonify({"success": True}), 200
             else:
-                return jsonify({"success": True}), 200
+                # Send non-command messages to the Eliza agent
+                response = await send_to_agent(message, user_id, username)
             
+            # Send response back to GroupMe
             await send_message(BOT_ID, response)
         
         return jsonify({"success": True}), 200
     except Exception as e:
         logger.error(f"Error in webhook: {str(e)}")
         return jsonify({"error": "Internal server error"}), 500
-
-async def webhook():
-    data = request.get_json()
-    data = request.get_json()
-    
-    if data['name'] != 'GroupMe':  # This line filters out non-user messages
-        message = data['text'].lower().strip()
-        
-        if message == '!help':
-            response = get_help_message()
-        elif message == '!usage':
-            response = await get_openai_usage()
-        elif message.startswith('!ai '):
-            prompt = message[4:].strip()
-            response = await generate_ai_response(prompt, "gpt-3.5-turbo", False)
-        elif message.startswith('!ai4 '):
-            prompt = message[5:].strip()
-            response = await generate_ai_response(prompt, "gpt-4", True)
-        elif message.startswith('!image '):
-            prompt = message[7:].strip()
-            image_url = await generate_image(prompt)
-            if image_url:
-                groupme_image_url = await upload_image_to_groupme(image_url)
-                if groupme_image_url:
-                    await send_message(BOT_ID, f"Image generated for: {prompt}", groupme_image_url)
-                else:
-                    await send_message(BOT_ID, "Failed to upload the generated image to GroupMe.")
-            else:
-                await send_message(BOT_ID, "Failed to generate image.")
-            return jsonify({"success": True}), 200
-        elif message == '!market':
-            response = generate_market_summary()
-        elif message == '!calendar':
-            response = generate_economic_calendar()
-        elif message == '!stocks':
-            response = generate_top_stocks()
-        elif message == '!news':
-            response = generate_top_news()
-        elif message == '!earnings':
-            response = get_earnings_data()
-        else:
-            return jsonify({"success": True}), 200
-        
-        await send_message(BOT_ID, response)
-    
-    return jsonify({"success": True}), 200
 
 # Error handler for rate limiting
 @application.errorhandler(RateLimitExceeded)

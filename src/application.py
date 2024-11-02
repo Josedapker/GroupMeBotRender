@@ -201,36 +201,26 @@ async def upload_image_to_groupme(image_url: str) -> Union[str, None]:
         print(f"Failed to upload image: {str(e)}")
         return None
 
-async def send_message(bot_id: str, text: str, image_url: Union[str, None] = None) -> None:
+# Add this constant to track which bot goes to which group
+GROUP_BOTS = {
+    "agent": os.getenv("AGENT_BOT_ID"),  # Bot ID for agent responses
+    "market": os.getenv("MARKET_BOT_ID"), # Bot ID for market commands
+    # Add other bot IDs as needed
+}
+
+async def send_message(text: str, image_url: Union[str, None] = None) -> None:
+    """Simple message sender using single bot ID"""
     url = "https://api.groupme.com/v3/bots/post"
-
-    # Truncate the message if it exceeds 1000 characters
-    if len(text) > 1000:
-        logger.warning(f"Message truncated from {len(text)} to 1000 characters.")
-        text = text[:1000]
-
     data = {
-        "bot_id": bot_id,
+        "bot_id": BOT_ID,  # Using the single bot ID
         "text": text,
         "attachments": []
     }
-
     if image_url:
         data["attachments"].append({"type": "image", "url": image_url})
-
-    try:
-        async with httpx.AsyncClient() as client:
-            response = await client.post(url, json=data)
-            response.raise_for_status()
-            logger.info(f"Message sent successfully: {text[:50]}...")
-    except httpx.HTTPStatusError as e:
-        logger.error(f"HTTP error occurred: {e.response.status_code} {e.response.reason_phrase}")
-        logger.error(f"Response content: {e.response.text}")
-        logger.error(f"Request data: {data}")
-        raise
-    except Exception as e:
-        logger.error(f"An unexpected error occurred: {str(e)}")
-        raise
+    
+    async with httpx.AsyncClient() as client:
+        response = await client.post(url, json=data)
 
 def get_help_message() -> str:
     help_message = """
@@ -771,10 +761,6 @@ async def generate_ai_response(prompt: str, model: str = "gpt-3.5-turbo", use_we
         logger.error(traceback.format_exc())
         return f"Sorry, I couldn't generate a response at this time. Error: {str(e)}"
 
-# Add these constants after the other constants
-AGENT_BASE_URL = "https://settled-mackerel-clear.ngrok-free.app"  # Your ngrok URL
-DEFAULT_AGENT = "Eliza"  # Default agent name for routing
-
 # Add this new function to handle agent communication
 async def send_to_agent(message: str, user_id: str, username: str) -> str:
     try:
@@ -803,14 +789,17 @@ async def send_to_agent(message: str, user_id: str, username: str) -> str:
         logger.error(f"Error connecting to agent: {str(e)}")
         return "Sorry, I'm unable to connect to the agent service."
 
-# Update the webhook route to handle agent integration
+# Define bot IDs for different purposes
+BOT_IDS = {
+    "command": "8ca1dd7879b66b571b92f1d34e",  # Jarvis - for /commands
+    "conversation": "cf5c9f00ca2c80f1651ba6b722"  # Eliza - for normal conversation
+}
+
 @application.route('/', methods=['POST'])
-@limiter.limit(f"{RATE_LIMIT_PER_MINUTE} per minute")
 async def webhook():
     try:
         data = request.get_json()
         
-        # Return early if this is a bot message
         if data.get('sender_type') == 'bot':
             return jsonify({"success": True}), 200
             
@@ -818,52 +807,37 @@ async def webhook():
         user_id = data.get('user_id', 'unknown')
         username = data.get('name', 'unknown')
         
-        # Handle special commands
-        if message.lower().startswith('!'):
-            if message == '!help':
-                response = get_help_message()
-            elif message == '!usage':
-                response = await get_openai_usage()
-            elif message.startswith('!ai '):
-                prompt = message[4:].strip()
-                response = await generate_ai_response(prompt, "gpt-3.5-turbo", False)
-            elif message.startswith('!ai4 '):
-                prompt = message[5:].strip()
-                response = await generate_ai_response(prompt, "gpt-4", True)
-            elif message.startswith('!image '):
-                prompt = message[7:].strip()
-                image_url = await generate_image(prompt)
-                if image_url:
-                    groupme_image_url = await upload_image_to_groupme(image_url)
-                    if groupme_image_url:
-                        await send_message(BOT_ID, f"Image generated for: {prompt}", groupme_image_url)
-                    else:
-                        await send_message(BOT_ID, "Failed to upload the generated image to GroupMe.")
-                else:
-                    await send_message(BOT_ID, "Failed to generate image.")
-                return jsonify({"success": True}), 200
-            elif message == '!market':
-                response = generate_market_summary()
-            elif message == '!calendar':
-                response = generate_economic_calendar()
-            elif message == '!stocks':
-                response = generate_top_stocks()
-            elif message == '!news':
-                response = generate_top_news()
-            elif message == '!earnings':
-                response = get_earnings_data()
-            else:
-                return jsonify({"success": True}), 200
+        # Route based on message type
+        if message.startswith('!') or message.startswith('/'):
+            # Commands go to Jarvis
+            bot_id = BOT_IDS["command"]
+            # Handle command processing...
+            await send_message(bot_id, response)
         else:
-            # Send non-command messages to agent
+            # Normal conversation goes to Eliza
+            bot_id = BOT_IDS["conversation"]
             response = await send_to_agent(message, user_id, username)
-            if response:  # Only send if we got a valid response
-                await send_message(BOT_ID, response)
+            if response:
+                await send_message(bot_id, response)
         
         return jsonify({"success": True}), 200
     except Exception as e:
         logger.error(f"Error in webhook: {str(e)}")
         return jsonify({"error": "Internal server error"}), 500
+
+async def send_message(bot_id: str, text: str, image_url: Union[str, None] = None) -> None:
+    """Send message using specified bot ID"""
+    url = "https://api.groupme.com/v3/bots/post"
+    data = {
+        "bot_id": bot_id,
+        "text": text,
+        "attachments": []
+    }
+    if image_url:
+        data["attachments"].append({"type": "image", "url": image_url})
+    
+    async with httpx.AsyncClient() as client:
+        response = await client.post(url, json=data)
 
 # Error handler for rate limiting
 @application.errorhandler(RateLimitExceeded)

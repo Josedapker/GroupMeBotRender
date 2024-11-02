@@ -772,87 +772,93 @@ async def generate_ai_response(prompt: str, model: str = "gpt-3.5-turbo", use_we
         return f"Sorry, I couldn't generate a response at this time. Error: {str(e)}"
 
 # Add these constants after the other constants
-AGENT_BASE_URL = "https://illegally-tight-fawn.ngrok-free.app"  # Your ngrok URL
-DEFAULT_AGENT = "agent"  # Default agent name if none specified
+AGENT_BASE_URL = "https://settled-mackerel-clear.ngrok-free.app"  # Your ngrok URL
+DEFAULT_AGENT = "Eliza"  # Default agent name for routing
 
-# Add this new function after the other helper functions
+# Add this new function to handle agent communication
 async def send_to_agent(message: str, user_id: str, username: str) -> str:
-    """Send message to Eliza agent and get response"""
     try:
+        logger.info(f"Attempting to send message to agent: {message}")
         async with aiohttp.ClientSession() as session:
             url = urljoin(AGENT_BASE_URL, f"{DEFAULT_AGENT}/message")
+            logger.info(f"Agent URL: {url}")
             payload = {
                 "text": message,
                 "userId": user_id,
                 "userName": username
             }
+            logger.info(f"Payload: {payload}")
             
             async with session.post(url, json=payload) as response:
+                logger.info(f"Agent response status: {response.status}")
                 if response.status == 200:
                     data = await response.json()
+                    logger.info(f"Agent response: {data}")
                     return data.get('text', 'No response from agent')
                 else:
-                    logger.error(f"Agent error: {response.status}")
+                    logger.error(f"Agent error response: {await response.text()}")
                     return "Sorry, I'm having trouble processing your request."
 
     except Exception as e:
         logger.error(f"Error connecting to agent: {str(e)}")
         return "Sorry, I'm unable to connect to the agent service."
 
-# Replace the existing webhook route with this updated version
+# Update the webhook route to handle agent integration
 @application.route('/', methods=['POST'])
 @limiter.limit(f"{RATE_LIMIT_PER_MINUTE} per minute")
 async def webhook():
     try:
         data = request.get_json()
         
-        if data['name'] != 'GroupMe':  # Filter out bot messages
-            message = data['text'].lower().strip()
-            user_id = data.get('user_id', 'unknown')
-            username = data.get('name', 'unknown')
+        # Return early if this is a bot message
+        if data.get('sender_type') == 'bot':
+            return jsonify({"success": True}), 200
             
-            # Handle special commands
-            if message.startswith('!'):
-                if message == '!help':
-                    response = get_help_message()
-                elif message == '!usage':
-                    response = await get_openai_usage()
-                elif message.startswith('!ai '):
-                    prompt = message[4:].strip()
-                    response = await generate_ai_response(prompt, "gpt-3.5-turbo", False)
-                elif message.startswith('!ai4 '):
-                    prompt = message[5:].strip()
-                    response = await generate_ai_response(prompt, "gpt-4", True)
-                elif message.startswith('!image '):
-                    prompt = message[7:].strip()
-                    image_url = await generate_image(prompt)
-                    if image_url:
-                        groupme_image_url = await upload_image_to_groupme(image_url)
-                        if groupme_image_url:
-                            await send_message(BOT_ID, f"Image generated for: {prompt}", groupme_image_url)
-                        else:
-                            await send_message(BOT_ID, "Failed to upload the generated image to GroupMe.")
+        message = data.get('text', '').strip()
+        user_id = data.get('user_id', 'unknown')
+        username = data.get('name', 'unknown')
+        
+        # Handle special commands
+        if message.lower().startswith('!'):
+            if message == '!help':
+                response = get_help_message()
+            elif message == '!usage':
+                response = await get_openai_usage()
+            elif message.startswith('!ai '):
+                prompt = message[4:].strip()
+                response = await generate_ai_response(prompt, "gpt-3.5-turbo", False)
+            elif message.startswith('!ai4 '):
+                prompt = message[5:].strip()
+                response = await generate_ai_response(prompt, "gpt-4", True)
+            elif message.startswith('!image '):
+                prompt = message[7:].strip()
+                image_url = await generate_image(prompt)
+                if image_url:
+                    groupme_image_url = await upload_image_to_groupme(image_url)
+                    if groupme_image_url:
+                        await send_message(BOT_ID, f"Image generated for: {prompt}", groupme_image_url)
                     else:
-                        await send_message(BOT_ID, "Failed to generate image.")
-                    return jsonify({"success": True}), 200
-                elif message == '!market':
-                    response = generate_market_summary()
-                elif message == '!calendar':
-                    response = generate_economic_calendar()
-                elif message == '!stocks':
-                    response = generate_top_stocks()
-                elif message == '!news':
-                    response = generate_top_news()
-                elif message == '!earnings':
-                    response = get_earnings_data()
+                        await send_message(BOT_ID, "Failed to upload the generated image to GroupMe.")
                 else:
-                    return jsonify({"success": True}), 200
+                    await send_message(BOT_ID, "Failed to generate image.")
+                return jsonify({"success": True}), 200
+            elif message == '!market':
+                response = generate_market_summary()
+            elif message == '!calendar':
+                response = generate_economic_calendar()
+            elif message == '!stocks':
+                response = generate_top_stocks()
+            elif message == '!news':
+                response = generate_top_news()
+            elif message == '!earnings':
+                response = get_earnings_data()
             else:
-                # Send non-command messages to the Eliza agent
-                response = await send_to_agent(message, user_id, username)
-            
-            # Send response back to GroupMe
-            await send_message(BOT_ID, response)
+                return jsonify({"success": True}), 200
+        else:
+            # Send non-command messages to agent
+            response = await send_to_agent(message, user_id, username)
+            if response:  # Only send if we got a valid response
+                await send_message(BOT_ID, response)
         
         return jsonify({"success": True}), 200
     except Exception as e:
@@ -951,7 +957,34 @@ async def test_news():
         logger.error(f"Error in test_news: {str(e)}")
         return jsonify({"error": "Internal server error"}), 500
 
+"""
+Message Flow:
+-------------
+GroupMe Message
+    │
+    ▼
+Is command? (!?)
+    │
+    ├──Yes──► Handle Command ──┐
+    │                         │
+    └──No───► Send to Agent   │
+                │            │
+                ▼            │
+          Agent Processes    │
+                │            │
+                ▼            │
+          Return Response    │
+                │            │
+                ▼            ▼
+            Send to GroupMe
 
+This flow diagram represents how messages are processed:
+1. Message arrives from GroupMe
+2. Check if it's a command (starts with !)
+3. If yes: Handle internally with command processor
+4. If no: Send to agent service for processing
+5. Both paths eventually send response back to GroupMe
+"""
 
 if __name__ == "__main__":
     print("Starting Flask development server...")
